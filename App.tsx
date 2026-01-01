@@ -10,6 +10,7 @@ import { RegisterScreen } from './src/screens/auth/RegisterScreen';
 import { ForgotPasswordScreen } from './src/screens/auth/ForgotPasswordScreen';
 import { OTPVerificationScreen } from './src/screens/auth/OTPVerificationScreen';
 import { ResetPasswordScreen } from './src/screens/auth/ResetPasswordScreen';
+import { HomeScreen } from './src/screens/main/HomeScreen';
 import { COLORS } from './src/constants/theme';
 
 SplashScreenExpo.preventAutoHideAsync();
@@ -94,10 +95,8 @@ export default function App() {
 
   const handleOTPVerifySuccess = () => {
     if (otpPurpose === 'registration') {
-      // Après vérification OTP d'inscription, connecter l'utilisateur
       handleLoginSuccess();
     } else {
-      // Après vérification OTP de mot de passe oublié, aller à reset password
       setAppState('reset-password');
     }
   };
@@ -108,6 +107,11 @@ export default function App() {
       'Votre mot de passe a été réinitialisé avec succès.',
       [{ text: 'OK', onPress: () => setAppState('login') }]
     );
+  };
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('isLoggedIn');
+    setAppState('login');
   };
 
   if (!appIsReady) {
@@ -166,9 +170,7 @@ export default function App() {
       )}
 
       {appState === 'main' && (
-        <View style={styles.placeholder}>
-          {/* Main App - À créer prochainement */}
-        </View>
+        <HomeScreen onLogout={handleLogout} />
       )}
     </View>
   );
@@ -178,9 +180,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-  },
-  placeholder: {
-    flex: 1,
-    backgroundColor: COLORS.backgroundDark,
   },
 });

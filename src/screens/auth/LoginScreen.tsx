@@ -1,5 +1,4 @@
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
@@ -11,8 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Button, Input } from "../../components/common";
-import { COLORS, SHADOWS, SIZES } from "../../constants/theme";
+import { Input } from "../../components/common";
 
 interface LoginScreenProps {
   onLoginSuccess: () => void;
@@ -23,7 +21,7 @@ interface LoginScreenProps {
 export const LoginScreen: React.FC<LoginScreenProps> = ({
   onLoginSuccess,
   onNavigateToRegister,
-  onForgotPassword
+  onForgotPassword,
 }) => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -32,20 +30,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   const [loading, setLoading] = useState(false);
 
   const validateIdentifier = (value: string) => {
-    // Vérifier si c'est un email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // Vérifier si c'est un téléphone togolais
     const phoneRegex = /^(\+228|00228)?[0-9]{8}$/;
-
     return emailRegex.test(value) || phoneRegex.test(value.replace(/\s/g, ""));
   };
 
   const handleLogin = async () => {
-    // Reset errors
     setIdentifierError("");
     setPasswordError("");
 
-    // Validation
     let isValid = true;
 
     if (!identifier) {
@@ -68,13 +61,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
     setLoading(true);
 
-    // TODO: Appel API au backend NestJS
-    // const response = await fetch('YOUR_API_URL/auth/login', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ identifier, password }),
-    // });
-
     setTimeout(() => {
       setLoading(false);
       onLoginSuccess();
@@ -83,191 +69,200 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
   const handleSocialLogin = (provider: string) => {
     console.log(`Login with ${provider}`);
-    // Implémenter plus tard
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <StatusBar style="dark" />
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={styles.keyboardView}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.logoContainer}>
-            <LinearGradient
-              colors={[COLORS.primary, COLORS.secondary]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.logoGradient}
-            >
-              <Ionicons name="heart" size={40} color={COLORS.white} />
-            </LinearGradient>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.title}>Bon retour !</Text>
+            <Text style={styles.subtitle}>
+              Connectez-vous pour continuer votre aventure
+            </Text>
           </View>
-          <Text style={styles.title}>Bienvenue !</Text>
-          <Text style={styles.subtitle}>Connectez-vous pour continuer</Text>
-        </View>
 
-        {/* Form */}
-        <View style={styles.form}>
-          <Input
-            label="Email ou Téléphone"
-            placeholder="exemple@email.com ou +228 XX XX XX XX"
-            value={identifier}
-            onChangeText={setIdentifier}
-            error={identifierError}
-            icon="mail-outline"
-            keyboardType="default"
-            autoCapitalize="none"
-          />
+          {/* Form */}
+          <View style={styles.form}>
+            <Input
+              label="Email ou Téléphone"
+              placeholder="exemple@email.com ou +228 XX XX XX XX"
+              value={identifier}
+              onChangeText={setIdentifier}
+              error={identifierError}
+              icon="mail-outline"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
 
-          <Input
-            label="Mot de passe"
-            placeholder="••••••••"
-            value={password}
-            onChangeText={setPassword}
-            error={passwordError}
-            icon="lock-closed-outline"
-            isPassword
-            autoCapitalize="none"
-            autoComplete="password"
-          />
+            <Input
+              label="Mot de passe"
+              placeholder="Entrez votre mot de passe"
+              value={password}
+              onChangeText={setPassword}
+              error={passwordError}
+              icon="lock-closed-outline"
+              isPassword
+              autoCapitalize="none"
+            />
 
-          <TouchableOpacity
-            style={styles.forgotPassword}
-            onPress={onForgotPassword}
-          >
-            <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.forgotPassword}
+              onPress={onForgotPassword}
+            >
+              <Text style={styles.forgotPasswordText}>
+                Mot de passe oublié ?
+              </Text>
+            </TouchableOpacity>
 
-          <Button
-            title="Se connecter"
-            onPress={handleLogin}
-            loading={loading}
-            fullWidth
-            style={styles.loginButton}
-          />
-        </View>
+            <TouchableOpacity
+              style={[
+                styles.loginButton,
+                loading && styles.loginButtonDisabled,
+              ]}
+              onPress={handleLogin}
+              disabled={loading}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.loginButtonText}>
+                {loading ? "Connexion..." : "Se connecter"}
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        {/* Divider */}
-        <View style={styles.divider}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>OU</Text>
-          <View style={styles.dividerLine} />
-        </View>
-        {/* Register Link */}
-        <View style={styles.registerContainer}>
-          <Text style={styles.registerText}>Vous n'avez pas de compte ? </Text>
-          <TouchableOpacity onPress={onNavigateToRegister}>
-            <Text style={styles.registerLink}>S'inscrire</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          {/* Divider */}
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <View style={styles.dividerLine} />
+          </View>
+
+
+          {/* Register Link */}
+          <View style={styles.registerContainer}>
+            <Text style={styles.registerText}>Nouveau sur Evivi ? </Text>
+            <TouchableOpacity onPress={onNavigateToRegister}>
+              <Text style={styles.registerLink}>Créer un compte</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
+    backgroundColor: "#FFFFFF",
+  },
+  keyboardView: {
+    flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: SIZES.xl,
-    paddingTop: SIZES.xxl + 20,
-    paddingBottom: SIZES.xl,
+    paddingHorizontal: 32,
+    paddingTop: 60,
+    paddingBottom: 32,
   },
   header: {
     alignItems: "center",
-    marginBottom: SIZES.xxl,
-  },
-  logoContainer: {
-    marginBottom: SIZES.lg,
-  },
-  logoGradient: {
-    width: 80,
-    height: 80,
-    borderRadius: SIZES.radiusXl,
-    justifyContent: "center",
-    alignItems: "center",
-    ...SHADOWS.medium,
+    marginBottom: 40,
   },
   title: {
-    fontSize: SIZES.h1,
+    fontSize: 32,
     fontWeight: "bold",
-    color: COLORS.text,
-    marginBottom: SIZES.xs,
+    color: "#1A1A1A",
+    marginBottom: 4,
   },
   subtitle: {
-    fontSize: SIZES.body,
-    color: COLORS.textSecondary,
+    fontSize: 16,
+    color: "#6B7280",
+    textAlign: "center",
   },
   form: {
-    marginBottom: SIZES.lg,
+    marginBottom: 24,
   },
   forgotPassword: {
     alignSelf: "flex-end",
-    marginBottom: SIZES.lg,
+    marginBottom: 24,
+    marginTop: -4,
   },
   forgotPasswordText: {
-    fontSize: SIZES.caption,
-    color: COLORS.primary,
+    fontSize: 14,
+    color: "#ff5757",
     fontWeight: "600",
   },
   loginButton: {
-    marginTop: SIZES.sm,
+    height: 56,
+    backgroundColor: "#ff5757",
+    borderRadius: 28,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 8,
+  },
+  loginButtonDisabled: {
+    opacity: 0.5,
+  },
+  loginButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFFFFF",
   },
   divider: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: SIZES.xl,
+    marginVertical: 32,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: COLORS.gray[200],
+    backgroundColor: "#E5E7EB",
   },
   dividerText: {
-    marginHorizontal: SIZES.md,
-    fontSize: SIZES.caption,
-    color: COLORS.textSecondary,
-    fontWeight: "600",
+    marginHorizontal: 16,
+    fontSize: 12,
+    color: "#9CA3AF",
+    fontWeight: "500",
   },
   socialContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    gap: SIZES.md,
-    marginBottom: SIZES.xl,
+    gap: 16,
+    marginBottom: 32,
   },
   socialButton: {
-    width: 60,
-    height: 60,
-    borderRadius: SIZES.radiusLg,
-    backgroundColor: COLORS.white,
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: COLORS.gray[200],
-    ...SHADOWS.small,
+    borderWidth: 1.5,
+    borderColor: "#E5E7EB",
   },
   registerContainer: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 16,
   },
   registerText: {
-    fontSize: SIZES.body,
-    color: COLORS.textSecondary,
+    fontSize: 16,
+    color: "#6B7280",
   },
   registerLink: {
-    fontSize: SIZES.body,
-    color: COLORS.primary,
+    fontSize: 16,
+    color: "#ff5757",
     fontWeight: "700",
   },
 });

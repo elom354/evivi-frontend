@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import { Ionicons } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
-import { StatusBar } from 'expo-status-bar';
-import { Button, Input, IconButton } from '../../components/common';
-import { COLORS, SIZES, SHADOWS } from '../../constants/theme';
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Button, IconButton, Input } from "../../components/common";
+import { COLORS, SIZES } from "../../constants/theme";
 
 interface ForgotPasswordScreenProps {
   onBack: () => void;
@@ -22,38 +22,32 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
   onBack,
   onCodeSent,
 }) => {
-  const [identifier, setIdentifier] = useState('');
-  const [identifierError, setIdentifierError] = useState('');
+  const [identifier, setIdentifier] = useState("");
+  const [identifierError, setIdentifierError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const validateIdentifier = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^(\+228|00228)?[0-9]{8}$/;
-    return emailRegex.test(value) || phoneRegex.test(value.replace(/\s/g, ''));
+    return emailRegex.test(value) || phoneRegex.test(value.replace(/\s/g, ""));
   };
 
   const handleSendCode = async () => {
-    setIdentifierError('');
+    setIdentifierError("");
 
     if (!identifier) {
-      setIdentifierError('Email ou numéro de téléphone requis');
+      setIdentifierError("Email ou numéro de téléphone requis");
       return;
     }
 
     if (!validateIdentifier(identifier)) {
-      setIdentifierError('Email ou numéro de téléphone invalide');
+      setIdentifierError("Email ou numéro de téléphone invalide");
       return;
     }
 
     setLoading(true);
 
     // TODO: Appel API au backend NestJS
-    // const response = await fetch('YOUR_API_URL/auth/forgot-password', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ identifier }),
-    // });
-
     setTimeout(() => {
       setLoading(false);
       onCodeSent(identifier);
@@ -62,7 +56,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
       <StatusBar style="dark" />
@@ -85,14 +79,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.iconContainer}>
-            <LinearGradient
-              colors={[COLORS.primary, COLORS.secondary]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.iconGradient}
-            >
-              <Ionicons name="lock-closed" size={40} color={COLORS.white} />
-            </LinearGradient>
+            <Ionicons name="lock-closed" size={40} color={COLORS.primary} />
           </View>
           <Text style={styles.title}>Mot de passe oublié ?</Text>
           <Text style={styles.subtitle}>
@@ -124,9 +111,13 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
 
         {/* Info */}
         <View style={styles.infoBox}>
-          <Ionicons name="information-circle-outline" size={20} color={COLORS.primary} />
+          <Ionicons
+            name="information-circle-outline"
+            size={20}
+            color={COLORS.primary}
+          />
           <Text style={styles.infoText}>
-            Vous recevrez un code à 6 chiffres par SMS ou email selon votre choix
+            Vous recevrez un code à 6 chiffres par SMS ou email
           </Text>
         </View>
       </ScrollView>
@@ -140,7 +131,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   backButton: {
-    position: 'absolute',
+    position: "absolute",
     top: SIZES.xxl + 10,
     left: SIZES.md,
     zIndex: 10,
@@ -152,31 +143,29 @@ const styles = StyleSheet.create({
     paddingBottom: SIZES.xl,
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: SIZES.xxl,
   },
   iconContainer: {
-    marginBottom: SIZES.lg,
-  },
-  iconGradient: {
     width: 80,
     height: 80,
     borderRadius: SIZES.radiusXl,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...SHADOWS.medium,
+    backgroundColor: COLORS.primaryLight,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: SIZES.lg,
   },
   title: {
-    fontSize: SIZES.h1,
-    fontWeight: 'bold',
+    fontSize: 32,
+    fontWeight: "bold",
     color: COLORS.text,
     marginBottom: SIZES.xs,
-    textAlign: 'center',
+    textAlign: "center",
   },
   subtitle: {
     fontSize: SIZES.body,
     color: COLORS.textSecondary,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 24,
     paddingHorizontal: SIZES.md,
   },
@@ -187,8 +176,8 @@ const styles = StyleSheet.create({
     marginTop: SIZES.md,
   },
   infoBox: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.primary + '10',
+    flexDirection: "row",
+    backgroundColor: COLORS.primaryLight,
     padding: SIZES.md,
     borderRadius: SIZES.radiusMd,
     gap: SIZES.sm,

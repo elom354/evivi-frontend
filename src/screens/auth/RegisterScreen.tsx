@@ -1,103 +1,90 @@
-import React, { useState } from 'react';
+import { Ionicons } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
+  StyleSheet,
+  Text,
   TouchableOpacity,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
-import { StatusBar } from 'expo-status-bar';
-import { Button, Input, IconButton } from '../../components/common';
-import { COLORS, SIZES, SHADOWS } from '../../constants/theme';
+  View,
+} from "react-native";
+import { Button, IconButton, Input } from "../../components/common";
+import { COLORS, SIZES } from "../../constants/theme";
 
 interface RegisterScreenProps {
-    onRegisterSuccess: (phone: string) => void;
-    onNavigateToLogin: () => void;
-    onBack: () => void;
-  }
+  onRegisterSuccess: (phone: string) => void;
+  onNavigateToLogin: () => void;
+  onBack: () => void;
+}
 
 export const RegisterScreen: React.FC<RegisterScreenProps> = ({
   onRegisterSuccess,
   onNavigateToLogin,
   onBack,
 }) => {
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [nameError, setNameError] = useState('');
-  const [phoneError, setPhoneError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [nameError, setNameError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
 
   const validatePhone = (phone: string) => {
-    // Format togolais: commence par +228 ou 00228 ou directement 8 chiffres
     const phoneRegex = /^(\+228|00228)?[0-9]{8}$/;
-    return phoneRegex.test(phone.replace(/\s/g, ''));
+    return phoneRegex.test(phone.replace(/\s/g, ""));
   };
 
   const handleRegister = async () => {
-    // Reset errors
-    setNameError('');
-    setPhoneError('');
-    setPasswordError('');
-    setConfirmPasswordError('');
+    setNameError("");
+    setPhoneError("");
+    setPasswordError("");
+    setConfirmPasswordError("");
 
-    // Validation
     let isValid = true;
 
     if (!name || name.length < 2) {
-      setNameError('Le nom doit contenir au moins 2 caractères');
+      setNameError("Le nom doit contenir au moins 2 caractères");
       isValid = false;
     }
 
     if (!phone) {
-      setPhoneError('Le numéro de téléphone est requis');
+      setPhoneError("Le numéro de téléphone est requis");
       isValid = false;
     } else if (!validatePhone(phone)) {
-      setPhoneError('Numéro de téléphone invalide (ex: +228 XX XX XX XX)');
+      setPhoneError("Numéro de téléphone invalide (ex: +228 XX XX XX XX)");
       isValid = false;
     }
 
     if (!password) {
-      setPasswordError('Le mot de passe est requis');
+      setPasswordError("Le mot de passe est requis");
       isValid = false;
     } else if (password.length < 6) {
-      setPasswordError('Le mot de passe doit contenir au moins 6 caractères');
+      setPasswordError("Le mot de passe doit contenir au moins 6 caractères");
       isValid = false;
     }
 
     if (!confirmPassword) {
-      setConfirmPasswordError('Veuillez confirmer votre mot de passe');
+      setConfirmPasswordError("Veuillez confirmer votre mot de passe");
       isValid = false;
     } else if (password !== confirmPassword) {
-      setConfirmPasswordError('Les mots de passe ne correspondent pas');
+      setConfirmPasswordError("Les mots de passe ne correspondent pas");
       isValid = false;
     }
 
     if (!acceptTerms) {
-      alert('Veuillez accepter les conditions d\'utilisation');
+      alert("Veuillez accepter les conditions d'utilisation");
       isValid = false;
     }
 
     if (!isValid) return;
 
     setLoading(true);
-
-    // TODO: Appel API au backend NestJS
-    // const response = await fetch('YOUR_API_URL/auth/register', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ name, phone, password }),
-    // });
 
     setTimeout(() => {
       setLoading(false);
@@ -106,13 +93,9 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <StatusBar style="dark" />
 
-      {/* Back Button */}
       <View style={styles.backButton}>
         <IconButton
           icon="arrow-back"
@@ -127,25 +110,13 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Header */}
         <View style={styles.header}>
-          <View style={styles.logoContainer}>
-            <LinearGradient
-              colors={[COLORS.primary, COLORS.secondary]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.logoGradient}
-            >
-              <Ionicons name="heart" size={40} color={COLORS.white} />
-            </LinearGradient>
-          </View>
           <Text style={styles.title}>Créer un compte</Text>
           <Text style={styles.subtitle}>
-            Rejoignez notre communauté
+            Rejoignez des milliers de célibataires
           </Text>
         </View>
 
-        {/* Form */}
         <View style={styles.form}>
           <Input
             label="Nom complet"
@@ -170,7 +141,7 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
 
           <Input
             label="Mot de passe"
-            placeholder="••••••••"
+            placeholder="Créez un mot de passe"
             value={password}
             onChangeText={setPassword}
             error={passwordError}
@@ -181,7 +152,7 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
 
           <Input
             label="Confirmer le mot de passe"
-            placeholder="••••••••"
+            placeholder="Confirmez votre mot de passe"
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             error={confirmPasswordError}
@@ -190,27 +161,32 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
             autoCapitalize="none"
           />
 
-          {/* Terms and Conditions */}
           <TouchableOpacity
             style={styles.termsContainer}
             onPress={() => setAcceptTerms(!acceptTerms)}
             activeOpacity={0.7}
           >
-            <View style={[styles.checkbox, acceptTerms && styles.checkboxActive]}>
+            <View
+              style={[styles.checkbox, acceptTerms && styles.checkboxActive]}
+            >
               {acceptTerms && (
                 <Ionicons name="checkmark" size={16} color={COLORS.white} />
               )}
             </View>
-            <Text style={styles.termsText}>
-              J'accepte les{' '}
-              <Text style={styles.termsLink}>conditions d'utilisation</Text>
-              {' '}et la{' '}
-              <Text style={styles.termsLink}>politique de confidentialité</Text>
-            </Text>
+            <View style={styles.termsTextContainer}>
+              <Text style={styles.termsText}>
+                J'accepte les{" "}
+                <Text style={styles.termsLink}>conditions d'utilisation</Text>{" "}
+                et la{" "}
+                <Text style={styles.termsLink}>
+                  politique de confidentialité
+                </Text>
+              </Text>
+            </View>
           </TouchableOpacity>
 
           <Button
-            title="S'inscrire"
+            title="Créer mon compte"
             onPress={handleRegister}
             loading={loading}
             fullWidth
@@ -218,7 +194,6 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
           />
         </View>
 
-        {/* Login Link */}
         <View style={styles.loginContainer}>
           <Text style={styles.loginText}>Vous avez déjà un compte ? </Text>
           <TouchableOpacity onPress={onNavigateToLogin}>
@@ -226,7 +201,7 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
@@ -236,7 +211,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   backButton: {
-    position: 'absolute',
+    position: "absolute",
     top: SIZES.xxl + 10,
     left: SIZES.md,
     zIndex: 10,
@@ -248,84 +223,64 @@ const styles = StyleSheet.create({
     paddingBottom: SIZES.xl,
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: SIZES.xl,
   },
-  logoContainer: {
-    marginBottom: SIZES.lg,
-  },
-  logoGradient: {
-    width: 80,
-    height: 80,
-    borderRadius: SIZES.radiusXl,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...SHADOWS.medium,
-  },
   title: {
-    fontSize: SIZES.h1,
-    fontWeight: 'bold',
+    fontSize: 32,
+    fontWeight: "bold",
     color: COLORS.text,
     marginBottom: SIZES.xs,
   },
   subtitle: {
     fontSize: SIZES.body,
     color: COLORS.textSecondary,
+    textAlign: "center",
   },
   form: {
     marginBottom: SIZES.lg,
   },
-  infoBox: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.primary + '10',
-    padding: SIZES.md,
-    borderRadius: SIZES.radiusMd,
-    marginBottom: SIZES.md,
-    gap: SIZES.sm,
-  },
-  infoText: {
-    flex: 1,
-    fontSize: SIZES.caption,
-    color: COLORS.primary,
-    lineHeight: 18,
-  },
   termsContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     marginBottom: SIZES.lg,
     marginTop: SIZES.xs,
   },
   checkbox: {
-    width: 24,
-    height: 24,
+    width: 22,
+    height: 22,
     borderRadius: SIZES.radiusSm,
     borderWidth: 2,
     borderColor: COLORS.gray[300],
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: SIZES.sm,
+    marginTop: 2,
   },
   checkboxActive: {
     backgroundColor: COLORS.primary,
     borderColor: COLORS.primary,
   },
-  termsText: {
+  termsTextContainer: {
     flex: 1,
+  },
+  termsText: {
     fontSize: SIZES.caption,
     color: COLORS.textSecondary,
     lineHeight: 20,
   },
   termsLink: {
     color: COLORS.primary,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   registerButton: {
     marginTop: SIZES.sm,
   },
   loginContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: SIZES.md,
   },
   loginText: {
     fontSize: SIZES.body,
@@ -334,6 +289,6 @@ const styles = StyleSheet.create({
   loginLink: {
     fontSize: SIZES.body,
     color: COLORS.primary,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 });

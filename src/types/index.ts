@@ -17,7 +17,7 @@ export interface User {
     id: string;
     title: string;
     description: string;
-    image: any; // ou null pour placeholder
+    image: any; // ImageSourcePropType ou null
     backgroundColor: string;
   }
 

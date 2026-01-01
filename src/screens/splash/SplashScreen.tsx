@@ -4,13 +4,10 @@ import {
   Text,
   StyleSheet,
   Animated,
-  Dimensions,
+  Image,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../../constants/theme';
-
-const { width, height } = Dimensions.get('window');
 
 interface SplashScreenProps {
   onFinish: () => void;
@@ -22,9 +19,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
   const heartBeat = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    // Animation séquencée
     Animated.sequence([
-      // Apparition du logo
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 1,
@@ -38,9 +33,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
           useNativeDriver: true,
         }),
       ]),
-      // Pause
       Animated.delay(500),
-      // Battement de coeur
       Animated.loop(
         Animated.sequence([
           Animated.timing(heartBeat, {
@@ -57,7 +50,6 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
         { iterations: 2 }
       ),
     ]).start(() => {
-      // Transition vers onboarding après 2.5s
       setTimeout(onFinish, 500);
     });
   }, []);
@@ -83,9 +75,12 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
             transform: [{ scale: heartBeat }],
           }}
         >
-          <Ionicons name="heart" size={100} color={COLORS.white} />
+          <Image
+            source={require('../../assets/images/evivi.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
         </Animated.View>
-        <Text style={styles.appName}>Togo Dating</Text>
         <Text style={styles.tagline}>Trouvez votre match parfait</Text>
       </Animated.View>
 
@@ -105,18 +100,15 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: 'center',
   },
-  appName: {
-    fontSize: SIZES.h1 + 8,
-    fontWeight: 'bold',
-    color: COLORS.white,
-    marginTop: SIZES.lg,
-    letterSpacing: 1,
+  logo: {
+    width: 200,
+    height: 100,
   },
   tagline: {
     fontSize: SIZES.body,
     color: COLORS.white,
     opacity: 0.9,
-    marginTop: SIZES.sm,
+    marginTop: SIZES.lg,
   },
   footer: {
     position: 'absolute',

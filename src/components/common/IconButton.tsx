@@ -1,11 +1,7 @@
-import React from 'react';
-import {
-  TouchableOpacity,
-  StyleSheet,
-  ViewStyle,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SIZES, SHADOWS } from '../../constants/theme';
+import { Ionicons } from "@expo/vector-icons";
+import React from "react";
+import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
+import { COLORS, SIZES } from "../../constants/theme";
 
 interface IconButtonProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -22,7 +18,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   onPress,
   size = 24,
   color = COLORS.text,
-  backgroundColor = COLORS.white,
+  backgroundColor = COLORS.gray[100],
   style,
   disabled = false,
 }) => {
@@ -45,12 +41,11 @@ export const IconButton: React.FC<IconButtonProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: 48,
-    height: 48,
-    borderRadius: SIZES.radiusFull,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...SHADOWS.small,
+    width: 40,
+    height: 40,
+    borderRadius: SIZES.radiusMd,
+    justifyContent: "center",
+    alignItems: "center",
   },
   disabled: {
     opacity: 0.5,

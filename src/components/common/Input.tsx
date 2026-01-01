@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
+import { Ionicons } from "@expo/vector-icons";
+import React, { useState } from "react";
 import {
-  View,
-  TextInput,
-  Text,
   StyleSheet,
-  TouchableOpacity,
+  Text,
+  TextInput,
   TextInputProps,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SIZES } from '../../constants/theme';
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface InputProps extends TextInputProps {
   label?: string;
   error?: string;
   icon?: keyof typeof Ionicons.glyphMap;
   isPassword?: boolean;
-  containerStyle?: any;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -23,15 +21,16 @@ export const Input: React.FC<InputProps> = ({
   error,
   icon,
   isPassword = false,
-  containerStyle,
+  style,
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <View style={[styles.container, containerStyle]}>
-      {label && <Text style={styles.label}>{label}</Text>}
+    <View style={styles.container}>
+      {label ? <Text style={styles.label}>{label}</Text> : null}
+
       <View
         style={[
           styles.inputContainer,
@@ -39,81 +38,85 @@ export const Input: React.FC<InputProps> = ({
           error && styles.inputContainerError,
         ]}
       >
-        {icon && (
+        {icon ? (
           <Ionicons
             name={icon}
             size={20}
-            color={isFocused ? COLORS.primary : COLORS.textSecondary}
+            color={isFocused ? "#ff5757" : "#6B7280"}
             style={styles.icon}
           />
-        )}
+        ) : null}
+
         <TextInput
-          style={styles.input}
-          placeholderTextColor={COLORS.textLight}
+          style={[styles.input, style]}
+          placeholderTextColor="#9CA3AF"
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          secureTextEntry={isPassword && !isPasswordVisible}
+          secureTextEntry={isPassword && !showPassword}
           {...props}
         />
-        {isPassword && (
+
+        {isPassword ? (
           <TouchableOpacity
-            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-            style={styles.eyeIcon}
+            onPress={() => setShowPassword(!showPassword)}
+            style={styles.eyeButton}
           >
             <Ionicons
-              name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
+              name={showPassword ? "eye-off-outline" : "eye-outline"}
               size={20}
-              color={COLORS.textSecondary}
+              color="#6B7280"
             />
           </TouchableOpacity>
-        )}
+        ) : null}
       </View>
-      {error && <Text style={styles.error}>{error}</Text>}
+
+      {error ? <Text style={styles.error}>{error}</Text> : null}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: SIZES.md,
+    marginBottom: 16,
   },
   label: {
-    fontSize: SIZES.caption,
-    fontWeight: '600',
-    color: COLORS.text,
-    marginBottom: SIZES.xs,
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#1A1A1A",
+    marginBottom: 8,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: SIZES.inputHeight,
-    backgroundColor: COLORS.backgroundDark,
-    borderRadius: SIZES.radiusMd,
-    borderWidth: 1,
-    borderColor: 'transparent',
-    paddingHorizontal: SIZES.md,
+    flexDirection: "row",
+    alignItems: "center",
+    height: 56,
+    backgroundColor: "#F3F4F6",
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: "transparent",
+    paddingHorizontal: 16,
   },
   inputContainerFocused: {
-    borderColor: COLORS.primary,
-    backgroundColor: COLORS.white,
+    borderColor: "#ff5757",
+    backgroundColor: "#FFFFFF",
   },
   inputContainerError: {
-    borderColor: COLORS.error,
+    borderColor: "#EF4444",
   },
   icon: {
-    marginRight: SIZES.sm,
+    marginRight: 12,
   },
   input: {
     flex: 1,
-    fontSize: SIZES.body,
-    color: COLORS.text,
+    fontSize: 16,
+    color: "#1A1A1A",
+    paddingVertical: 0,
   },
-  eyeIcon: {
-    padding: SIZES.xs,
+  eyeButton: {
+    padding: 4,
   },
   error: {
-    fontSize: SIZES.small,
-    color: COLORS.error,
-    marginTop: SIZES.xs,
+    fontSize: 12,
+    color: "#EF4444",
+    marginTop: 4,
   },
 });

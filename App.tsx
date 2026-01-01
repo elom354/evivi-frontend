@@ -1,34 +1,48 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenExpo from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SplashScreen } from './src/screens/splash/SplashScreen';
 import { OnboardingScreen } from './src/screens/onboarding/OnboardingScreen';
+import { LoginScreen } from './src/screens/auth/LoginScreen';
+import { RegisterScreen } from './src/screens/auth/RegisterScreen';
+import { ForgotPasswordScreen } from './src/screens/auth/ForgotPasswordScreen';
+import { OTPVerificationScreen } from './src/screens/auth/OTPVerificationScreen';
+import { ResetPasswordScreen } from './src/screens/auth/ResetPasswordScreen';
 import { COLORS } from './src/constants/theme';
 
-// Empêche le splash screen natif de se cacher automatiquement
 SplashScreenExpo.preventAutoHideAsync();
 
-type AppState = 'loading' | 'splash' | 'onboarding' | 'auth' | 'main';
+type AppState =
+  | 'loading'
+  | 'splash'
+  | 'onboarding'
+  | 'login'
+  | 'register'
+  | 'forgot-password'
+  | 'otp-verification'
+  | 'reset-password'
+  | 'main';
 
 export default function App() {
   const [appState, setAppState] = useState<AppState>('loading');
   const [appIsReady, setAppIsReady] = useState(false);
+  const [userIdentifier, setUserIdentifier] = useState('');
+  const [otpPurpose, setOtpPurpose] = useState<'registration' | 'forgot-password'>('registration');
 
   useEffect(() => {
     async function prepare() {
       try {
-        // Charger les ressources, fonts, etc.
         await loadResources();
 
-        // Vérifier si l'utilisateur a déjà vu l'onboarding
         const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+        const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
 
-        if (hasSeenOnboarding === 'true') {
-          // Si oui, aller directement à l'écran d'authentification
-          // Pour l'instant on reste sur onboarding pour le développement
-          setAppState('splash');
+        if (isLoggedIn === 'true') {
+          setAppState('main');
+        } else if (hasSeenOnboarding === 'true') {
+          setAppState('login');
         } else {
           setAppState('splash');
         }
@@ -43,8 +57,6 @@ export default function App() {
   }, []);
 
   const loadResources = async () => {
-    // Ici tu pourras charger les fonts, images, etc.
-    // Pour l'instant, on simule un chargement
     await new Promise(resolve => setTimeout(resolve, 1000));
   };
 
@@ -59,10 +71,43 @@ export default function App() {
   };
 
   const handleOnboardingFinish = async () => {
-    // Sauvegarder que l'utilisateur a vu l'onboarding
     await AsyncStorage.setItem('hasSeenOnboarding', 'true');
-    // Aller vers l'écran d'authentification (à créer)
-    setAppState('auth');
+    setAppState('login');
+  };
+
+  const handleRegisterSuccess = (phone: string) => {
+    setUserIdentifier(phone);
+    setOtpPurpose('registration');
+    setAppState('otp-verification');
+  };
+
+  const handleLoginSuccess = async () => {
+    await AsyncStorage.setItem('isLoggedIn', 'true');
+    setAppState('main');
+  };
+
+  const handleForgotPasswordCodeSent = (identifier: string) => {
+    setUserIdentifier(identifier);
+    setOtpPurpose('forgot-password');
+    setAppState('otp-verification');
+  };
+
+  const handleOTPVerifySuccess = () => {
+    if (otpPurpose === 'registration') {
+      // Après vérification OTP d'inscription, connecter l'utilisateur
+      handleLoginSuccess();
+    } else {
+      // Après vérification OTP de mot de passe oublié, aller à reset password
+      setAppState('reset-password');
+    }
+  };
+
+  const handleResetPasswordSuccess = () => {
+    Alert.alert(
+      'Succès !',
+      'Votre mot de passe a été réinitialisé avec succès.',
+      [{ text: 'OK', onPress: () => setAppState('login') }]
+    );
   };
 
   if (!appIsReady) {
@@ -71,7 +116,7 @@ export default function App() {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <StatusBar style="light" />
+      <StatusBar style={appState === 'splash' ? 'light' : 'dark'} />
 
       {appState === 'splash' && (
         <SplashScreen onFinish={handleSplashFinish} />
@@ -81,9 +126,48 @@ export default function App() {
         <OnboardingScreen onFinish={handleOnboardingFinish} />
       )}
 
-      {appState === 'auth' && (
+      {appState === 'login' && (
+        <LoginScreen
+          onLoginSuccess={handleLoginSuccess}
+          onNavigateToRegister={() => setAppState('register')}
+          onForgotPassword={() => setAppState('forgot-password')}
+        />
+      )}
+
+      {appState === 'register' && (
+        <RegisterScreen
+          onRegisterSuccess={handleRegisterSuccess}
+          onNavigateToLogin={() => setAppState('login')}
+          onBack={() => setAppState('login')}
+        />
+      )}
+
+      {appState === 'forgot-password' && (
+        <ForgotPasswordScreen
+          onBack={() => setAppState('login')}
+          onCodeSent={handleForgotPasswordCodeSent}
+        />
+      )}
+
+      {appState === 'otp-verification' && (
+        <OTPVerificationScreen
+          onBack={() => setAppState(otpPurpose === 'registration' ? 'register' : 'forgot-password')}
+          onVerifySuccess={handleOTPVerifySuccess}
+          identifier={userIdentifier}
+          purpose={otpPurpose}
+        />
+      )}
+
+      {appState === 'reset-password' && (
+        <ResetPasswordScreen
+          onResetSuccess={handleResetPasswordSuccess}
+          identifier={userIdentifier}
+        />
+      )}
+
+      {appState === 'main' && (
         <View style={styles.placeholder}>
-          {/* Écran d'authentification à créer prochainement */}
+          {/* Main App - À créer prochainement */}
         </View>
       )}
     </View>

@@ -10,7 +10,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Input } from "../../components/common";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Input, Toast } from "../../components/common";
+import { useToast } from "../../hooks/useToast";
+import AuthService from "../../services/auth/auth.service";
 
 interface LoginScreenProps {
   onLoginSuccess: () => void;
@@ -29,6 +32,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const { toast, showToast, hideToast } = useToast();
+
   const validateIdentifier = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^(\+228|00228)?[0-9]{8}$/;
@@ -42,10 +47,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     let isValid = true;
 
     if (!identifier) {
-      setIdentifierError("Email ou numéro de téléphone requis");
+      setIdentifierError("Numéro de téléphone requis");
       isValid = false;
     } else if (!validateIdentifier(identifier)) {
-      setIdentifierError("Email ou numéro de téléphone invalide");
+      setIdentifierError("Numéro de téléphone invalide");
       isValid = false;
     }
 
@@ -61,19 +66,56 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      const response = await AuthService.login({
+        identifier: identifier,
+        password: password,
+      });
+
+      // Sauvegarder les tokens
+      if (response.tokens?.accessToken) {
+        await AsyncStorage.setItem("accessToken", response.tokens.accessToken);
+      }
+
+      if (response.tokens?.refreshToken) {
+        await AsyncStorage.setItem("refreshToken", response.tokens.refreshToken);
+      }
+
+      // Sauvegarder les infos utilisateur (optionnel)
+      if (response.user) {
+        await AsyncStorage.setItem("user", JSON.stringify(response.user));
+      }
+
       setLoading(false);
-      onLoginSuccess();
-    }, 1500);
+      showToast("Connexion réussie ! Bienvenue ", "success");
+
+      setTimeout(() => {
+        onLoginSuccess();
+      }, 1500);
+    } catch (error: any) {
+      setLoading(false);
+      showToast(
+        error.message || "Identifiants incorrects. Veuillez réessayer.",
+        "error"
+      );
+    }
   };
 
   const handleSocialLogin = (provider: string) => {
-    console.log(`Login with ${provider}`);
+    showToast(`Connexion avec ${provider} bientôt disponible`, "info");
   };
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
+
+      {/* Toast */}
+      <Toast
+        visible={toast.visible}
+        message={toast.message}
+        type={toast.type}
+        onHide={hideToast}
+      />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -95,13 +137,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           {/* Form */}
           <View style={styles.form}>
             <Input
-              label="Email ou Téléphone"
-              placeholder="exemple@email.com ou +228 XX XX XX XX"
+              label="Numéro de téléphone"
+              placeholder="+228 XX XX XX XX"
               value={identifier}
               onChangeText={setIdentifier}
               error={identifierError}
-              icon="mail-outline"
-              keyboardType="email-address"
+              icon="call-outline"
+              keyboardType="phone-pad"
               autoCapitalize="none"
             />
 
@@ -145,8 +187,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             <View style={styles.dividerLine} />
             <View style={styles.dividerLine} />
           </View>
-
-
           {/* Register Link */}
           <View style={styles.registerContainer}>
             <Text style={styles.registerText}>Nouveau sur Evivi ? </Text>

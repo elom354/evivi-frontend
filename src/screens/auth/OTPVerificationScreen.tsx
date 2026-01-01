@@ -11,14 +11,18 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { IconButton } from "../../components/common";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Toast } from "../../components/common";
+import AuthService from "../../services/auth/auth.service";
 import { COLORS, SIZES } from "../../constants/theme";
+import { useToast } from "../../hooks/useToast";
 
 interface OTPVerificationScreenProps {
   onBack: () => void;
   onVerifySuccess: () => void;
   identifier: string;
   purpose: "registration" | "forgot-password";
+  userId: string; // 👈 userId maintenant requis
 }
 
 export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
@@ -26,12 +30,15 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
   onVerifySuccess,
   identifier,
   purpose,
+  userId,
 }) => {
-  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const { toast, showToast, hideToast } = useToast();
 
   const inputRefs = useRef<TextInput[]>([]);
   const shakeAnimation = useRef(new Animated.Value(0)).current;
@@ -82,13 +89,13 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
 
   const handleOtpChange = (value: string, index: number) => {
     if (value.length > 1) {
-      const digits = value.slice(0, 4).split("");
+      const digits = value.slice(0, 6).split("");
       const newOtp = [...otp];
       digits.forEach((digit, i) => {
-        if (i < 4) newOtp[i] = digit;
+        if (i < 6) newOtp[i] = digit;
       });
       setOtp(newOtp);
-      const nextIndex = Math.min(digits.length, 3);
+      const nextIndex = Math.min(digits.length, 5);
       setActiveIndex(nextIndex);
       inputRefs.current[nextIndex]?.focus();
       return;
@@ -98,15 +105,14 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
     newOtp[index] = value;
     setOtp(newOtp);
 
-    if (value && index < 3) {
+    if (value && index < 5) {
       setActiveIndex(index + 1);
       inputRefs.current[index + 1]?.focus();
     }
 
-    // Auto-vérifier quand les 4 chiffres sont remplis
-    if (value && index === 3) {
-      const fullCode = [...newOtp.slice(0, 3), value].join("");
-      if (fullCode.length === 4) {
+    if (value && index === 5) {
+      const fullCode = [...newOtp.slice(0, 5), value].join("");
+      if (fullCode.length === 6) {
         handleVerify(fullCode);
       }
     }
@@ -126,44 +132,86 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
   const handleVerify = async (code?: string) => {
     const otpCode = code || otp.join("");
 
-    if (otpCode.length !== 4) {
+    if (otpCode.length !== 6) {
       return;
     }
 
     setLoading(true);
 
-    // TODO: Appel API
-    setTimeout(() => {
-      setLoading(false);
-      if (otpCode === "1234") {
-        onVerifySuccess();
-      } else {
-        shakeInputs();
-        setOtp(["", "", "", ""]);
-        setActiveIndex(0);
-        inputRefs.current[0]?.focus();
+    try {
+      const response = await AuthService.verifyOTP({
+        userId: userId,
+        code: otpCode,
+      });
+
+      if (response.accessToken) {
+        await AsyncStorage.setItem("accessToken", response.accessToken);
       }
-    }, 1000);
+
+      if (response.refreshToken) {
+        await AsyncStorage.setItem("refreshToken", response.refreshToken);
+      }
+
+      setLoading(false);
+      showToast("Compte vérifié avec succès !", "success");
+
+      setTimeout(() => {
+        onVerifySuccess();
+      }, 1500);
+    } catch (error: any) {
+      setLoading(false);
+      shakeInputs();
+      setOtp(["", "", "", "", "", ""]);
+      setActiveIndex(0);
+      inputRefs.current[0]?.focus();
+
+      showToast(
+        error.message || "Code de vérification invalide. Veuillez réessayer.",
+        "error"
+      );
+    }
   };
 
   const handleResendCode = async () => {
     if (!canResend) return;
-    setCanResend(false);
-    setResendTimer(60);
-    setOtp(["", "", "", ""]);
-    setActiveIndex(0);
-    inputRefs.current[0]?.focus();
+
+    setLoading(true);
+
+    try {
+      await AuthService.resendOTP(identifier, purpose);
+
+      setCanResend(false);
+      setResendTimer(60);
+      setOtp(["", "", "", "", "", ""]);
+      setActiveIndex(0);
+      inputRefs.current[0]?.focus();
+      setLoading(false);
+
+      showToast("Code renvoyé avec succès !", "success");
+    } catch (error: any) {
+      setLoading(false);
+      showToast(
+        error.message || "Impossible de renvoyer le code. Veuillez réessayer.",
+        "error"
+      );
+    }
   };
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
 
+      <Toast
+        visible={toast.visible}
+        message={toast.message}
+        type={toast.type}
+        onHide={hideToast}
+      />
+
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
       >
-        {/* Back Button */}
         <View style={styles.backButton}>
           <TouchableOpacity
             style={styles.backButtonTouchable}
@@ -174,17 +222,14 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
           </TouchableOpacity>
         </View>
 
-        {/* Timer */}
         <View style={styles.timerContainer}>
           <Text style={styles.timer}>{formatTime(resendTimer)}</Text>
         </View>
 
-        {/* Content */}
         <View style={styles.content}>
           <Text style={styles.title}>Tapez le code de vérification</Text>
-          <Text style={styles.subtitle}>que nous vous avons envoyé</Text>
+          <Text style={styles.subtitle}>Code envoyé au {identifier}</Text>
 
-          {/* OTP Inputs */}
           <Animated.View
             style={[
               styles.otpContainer,
@@ -227,23 +272,24 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
           </Animated.View>
         </View>
 
-        {/* Resend */}
         <TouchableOpacity
           onPress={handleResendCode}
-          disabled={!canResend}
+          disabled={!canResend || loading}
           style={styles.resendButton}
         >
           <Text
-            style={[styles.resendText, !canResend && styles.resendTextDisabled]}
+            style={[
+              styles.resendText,
+              (!canResend || loading) && styles.resendTextDisabled,
+            ]}
           >
-            Renvoyer
+            {loading ? "Envoi..." : "Renvoyer"}
           </Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -298,12 +344,12 @@ const styles = StyleSheet.create({
   otpContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    gap: SIZES.md,
+    gap: SIZES.sm,
     marginBottom: SIZES.xxl,
   },
   otpInputWrapper: {
-    width: 70,
-    height: 70,
+    width: 50,
+    height: 60,
     borderRadius: SIZES.radiusLg,
     backgroundColor: COLORS.gray[100],
     borderWidth: 2,
@@ -321,7 +367,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.primary,
   },
   otpInput: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: "bold",
     color: COLORS.white,
     textAlign: "center",
@@ -330,7 +376,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   placeholder: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: "bold",
     color: COLORS.gray[300],
     position: "absolute",

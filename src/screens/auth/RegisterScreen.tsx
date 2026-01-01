@@ -8,11 +8,13 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Button, IconButton, Input } from "../../components/common";
+import { Button, IconButton, Input, Toast } from "../../components/common";
 import { COLORS, SIZES } from "../../constants/theme";
+import AuthService from "../../services/auth/auth.service";
+import { useToast } from "../../hooks/useToast";
 
 interface RegisterScreenProps {
-  onRegisterSuccess: (phone: string) => void;
+  onRegisterSuccess: (phone: string, userId: string) => void;
   onNavigateToLogin: () => void;
   onBack: () => void;
 }
@@ -34,6 +36,8 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
 
   const [loading, setLoading] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
+
+  const { toast, showToast, hideToast } = useToast();
 
   const validatePhone = (phone: string) => {
     const phoneRegex = /^(\+228|00228)?[0-9]{8}$/;
@@ -78,23 +82,48 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
     }
 
     if (!acceptTerms) {
-      alert("Veuillez accepter les conditions d'utilisation");
-      isValid = false;
+      showToast("Veuillez accepter les conditions d'utilisation", "warning");
+      return;
     }
 
     if (!isValid) return;
 
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      const response = await AuthService.register({
+        fullName: name,
+        phone: phone,
+        phoneCountryCode: "+228",
+        password: password,
+        otpMethod: "sms",
+      });
+
       setLoading(false);
-      onRegisterSuccess(phone);
-    }, 1500);
+      showToast("Inscription réussie ! Vérifiez votre téléphone.", "success");
+
+      setTimeout(() => {
+        onRegisterSuccess(phone, response.user._id || "");
+      }, 1500);
+    } catch (error: any) {
+      setLoading(false);
+      showToast(
+        error.message || "Une erreur est survenue lors de l'inscription",
+        "error"
+      );
+    }
   };
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
+
+      <Toast
+        visible={toast.visible}
+        message={toast.message}
+        type={toast.type}
+        onHide={hideToast}
+      />
 
       <View style={styles.backButton}>
         <IconButton
@@ -169,18 +198,13 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
             <View
               style={[styles.checkbox, acceptTerms && styles.checkboxActive]}
             >
-              {acceptTerms && (
+              {acceptTerms ? (
                 <Ionicons name="checkmark" size={16} color={COLORS.white} />
-              )}
+              ) : null}
             </View>
             <View style={styles.termsTextContainer}>
               <Text style={styles.termsText}>
-                J'accepte les{" "}
-                <Text style={styles.termsLink}>conditions d'utilisation</Text>{" "}
-                et la{" "}
-                <Text style={styles.termsLink}>
-                  politique de confidentialité
-                </Text>
+                J'accepte les <Text style={styles.termsLink}>conditions d'utilisation</Text> et la <Text style={styles.termsLink}>politique de confidentialité</Text>
               </Text>
             </View>
           </TouchableOpacity>

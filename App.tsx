@@ -30,6 +30,7 @@ export default function App() {
   const [appState, setAppState] = useState<AppState>('loading');
   const [appIsReady, setAppIsReady] = useState(false);
   const [userIdentifier, setUserIdentifier] = useState('');
+  const [userId, setUserId] = useState(''); // 👈 Nouveau state pour userId
   const [otpPurpose, setOtpPurpose] = useState<'registration' | 'forgot-password'>('registration');
 
   useEffect(() => {
@@ -76,8 +77,10 @@ export default function App() {
     setAppState('login');
   };
 
-  const handleRegisterSuccess = (phone: string) => {
+  // 👇 Mise à jour pour recevoir le userId
+  const handleRegisterSuccess = (phone: string, userId: string) => {
     setUserIdentifier(phone);
+    setUserId(userId); // Stocker le userId
     setOtpPurpose('registration');
     setAppState('otp-verification');
   };
@@ -111,6 +114,8 @@ export default function App() {
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem('isLoggedIn');
+    await AsyncStorage.removeItem('accessToken');
+    await AsyncStorage.removeItem('refreshToken');
     setAppState('login');
   };
 
@@ -159,6 +164,7 @@ export default function App() {
           onVerifySuccess={handleOTPVerifySuccess}
           identifier={userIdentifier}
           purpose={otpPurpose}
+          userId={userId} 
         />
       )}
 

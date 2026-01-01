@@ -31,14 +31,17 @@ export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
   const [userIdentifier, setUserIdentifier] = useState('');
   const [userId, setUserId] = useState(''); // 👈 Nouveau state pour userId
-  const [otpPurpose, setOtpPurpose] = useState<'registration' | 'forgot-password'>('registration');
+  const [otpPurpose, setOtpPurpose] = useState<
+    'registration' | 'forgot-password'
+  >('registration');
 
   useEffect(() => {
     async function prepare() {
       try {
         await loadResources();
 
-        const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+        const hasSeenOnboarding =
+          await AsyncStorage.getItem('hasSeenOnboarding');
         const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
 
         if (isLoggedIn === 'true') {
@@ -59,7 +62,7 @@ export default function App() {
   }, []);
 
   const loadResources = async () => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
   const onLayoutRootView = useCallback(async () => {
@@ -108,7 +111,7 @@ export default function App() {
     Alert.alert(
       'Succès !',
       'Votre mot de passe a été réinitialisé avec succès.',
-      [{ text: 'OK', onPress: () => setAppState('login') }]
+      [{ text: 'OK', onPress: () => setAppState('login') }],
     );
   };
 
@@ -127,9 +130,7 @@ export default function App() {
     <View style={styles.container} onLayout={onLayoutRootView}>
       <StatusBar style={appState === 'splash' ? 'light' : 'dark'} />
 
-      {appState === 'splash' && (
-        <SplashScreen onFinish={handleSplashFinish} />
-      )}
+      {appState === 'splash' && <SplashScreen onFinish={handleSplashFinish} />}
 
       {appState === 'onboarding' && (
         <OnboardingScreen onFinish={handleOnboardingFinish} />
@@ -160,11 +161,15 @@ export default function App() {
 
       {appState === 'otp-verification' && (
         <OTPVerificationScreen
-          onBack={() => setAppState(otpPurpose === 'registration' ? 'register' : 'forgot-password')}
+          onBack={() =>
+            setAppState(
+              otpPurpose === 'registration' ? 'register' : 'forgot-password',
+            )
+          }
           onVerifySuccess={handleOTPVerifySuccess}
           identifier={userIdentifier}
           purpose={otpPurpose}
-          userId={userId} 
+          userId={userId}
         />
       )}
 
@@ -175,9 +180,7 @@ export default function App() {
         />
       )}
 
-      {appState === 'main' && (
-        <HomeScreen onLogout={handleLogout} />
-      )}
+      {appState === 'main' && <HomeScreen onLogout={handleLogout} />}
     </View>
   );
 }

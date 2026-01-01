@@ -1,6 +1,6 @@
-import { Ionicons } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
+import React, { useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -9,9 +9,9 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { Button, IconButton, Input } from "../../components/common";
-import { COLORS, SIZES } from "../../constants/theme";
+} from 'react-native';
+import { Button, IconButton, Input } from '../../components/common';
+import { COLORS, SIZES } from '../../constants/theme';
 
 interface ForgotPasswordScreenProps {
   onBack: () => void;
@@ -22,26 +22,26 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
   onBack,
   onCodeSent,
 }) => {
-  const [identifier, setIdentifier] = useState("");
-  const [identifierError, setIdentifierError] = useState("");
+  const [identifier, setIdentifier] = useState('');
+  const [identifierError, setIdentifierError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const validateIdentifier = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^(\+228|00228)?[0-9]{8}$/;
-    return emailRegex.test(value) || phoneRegex.test(value.replace(/\s/g, ""));
+    return emailRegex.test(value) || phoneRegex.test(value.replace(/\s/g, ''));
   };
 
   const handleSendCode = async () => {
-    setIdentifierError("");
+    setIdentifierError('');
 
     if (!identifier) {
-      setIdentifierError("Email ou numéro de téléphone requis");
+      setIdentifierError('Email ou numéro de téléphone requis');
       return;
     }
 
     if (!validateIdentifier(identifier)) {
-      setIdentifierError("Email ou numéro de téléphone invalide");
+      setIdentifierError('Email ou numéro de téléphone invalide');
       return;
     }
 
@@ -56,7 +56,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
       <StatusBar style="dark" />
@@ -83,7 +83,8 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
           </View>
           <Text style={styles.title}>Mot de passe oublié ?</Text>
           <Text style={styles.subtitle}>
-            Entrez votre email ou numéro de téléphone pour recevoir un code de réinitialisation
+            Entrez votre email ou numéro de téléphone pour recevoir un code de
+            réinitialisation
           </Text>
         </View>
 
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   backButton: {
-    position: "absolute",
+    position: 'absolute',
     top: SIZES.xxl + 10,
     left: SIZES.md,
     zIndex: 10,
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
     paddingBottom: SIZES.xl,
   },
   header: {
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: SIZES.xxl,
   },
   iconContainer: {
@@ -151,21 +152,21 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: SIZES.radiusXl,
     backgroundColor: COLORS.primaryLight,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: SIZES.lg,
   },
   title: {
     fontSize: 32,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: COLORS.text,
     marginBottom: SIZES.xs,
-    textAlign: "center",
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: SIZES.body,
     color: COLORS.textSecondary,
-    textAlign: "center",
+    textAlign: 'center',
     lineHeight: 24,
     paddingHorizontal: SIZES.md,
   },
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
     marginTop: SIZES.md,
   },
   infoBox: {
-    flexDirection: "row",
+    flexDirection: 'row',
     backgroundColor: COLORS.primaryLight,
     padding: SIZES.md,
     borderRadius: SIZES.radiusMd,

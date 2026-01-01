@@ -21,41 +21,40 @@ interface RegisterResponse {
 }
 
 interface LoginRequest {
-    identifier: string; // phone
-    password: string;
-  }
+  identifier: string; // phone
+  password: string;
+}
 
-  interface LoginResponse {
-    user: {
-      _id: string;
-      fullName: string;
-      phone: string;
-      phoneCountryCode: string;
-      status: string;
-      phoneVerified: boolean;
-      isAdmin: boolean;
-      image?: string;
-    };
-    tokens: {
-      accessToken: string;
-      refreshToken: string;
-      expiresIn: number;
-      refreshExpiresIn: number;
-    };
-    message: string;
-  }
-
+interface LoginResponse {
+  user: {
+    _id: string;
+    fullName: string;
+    phone: string;
+    phoneCountryCode: string;
+    status: string;
+    phoneVerified: boolean;
+    isAdmin: boolean;
+    image?: string;
+  };
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+    expiresIn: number;
+    refreshExpiresIn: number;
+  };
+  message: string;
+}
 
 interface VerifyOTPRequest {
-    userId: string;
-    code: string;
-  }
+  userId: string;
+  code: string;
+}
 
-  interface VerifyOTPResponse {
-    message: string;
-    accessToken?: string;
-    refreshToken?: string;
-  }
+interface VerifyOTPResponse {
+  message: string;
+  accessToken?: string;
+  refreshToken?: string;
+}
 
 interface ForgotPasswordRequest {
   identifier: string;
@@ -73,7 +72,7 @@ class AuthService {
     try {
       const response = await ApiService.post<RegisterResponse>(
         API_CONFIG.ENDPOINTS.AUTH.REGISTER,
-        data
+        data,
       );
       return response;
     } catch (error: any) {
@@ -85,20 +84,19 @@ class AuthService {
     try {
       const response = await ApiService.post<LoginResponse>(
         API_CONFIG.ENDPOINTS.AUTH.LOGIN,
-        data
+        data,
       );
       return response;
     } catch (error: any) {
       throw this.handleError(error);
     }
   }
-
 
   async verifyOTP(data: VerifyOTPRequest): Promise<VerifyOTPResponse> {
     try {
       const response = await ApiService.post<VerifyOTPResponse>(
         API_CONFIG.ENDPOINTS.AUTH.VERIFY_OTP,
-        data
+        data,
       );
       return response;
     } catch (error: any) {
@@ -106,11 +104,14 @@ class AuthService {
     }
   }
 
-  async resendOTP(identifier: string, purpose: 'registration' | 'forgot-password'): Promise<any> {
+  async resendOTP(
+    identifier: string,
+    purpose: 'registration' | 'forgot-password',
+  ): Promise<any> {
     try {
       const response = await ApiService.post(
         API_CONFIG.ENDPOINTS.AUTH.RESEND_OTP,
-        { identifier, purpose }
+        { identifier, purpose },
       );
       return response;
     } catch (error: any) {
@@ -122,7 +123,7 @@ class AuthService {
     try {
       const response = await ApiService.post(
         API_CONFIG.ENDPOINTS.AUTH.FORGOT_PASSWORD,
-        data
+        data,
       );
       return response;
     } catch (error: any) {
@@ -134,7 +135,7 @@ class AuthService {
     try {
       const response = await ApiService.post(
         API_CONFIG.ENDPOINTS.AUTH.RESET_PASSWORD,
-        data
+        data,
       );
       return response;
     } catch (error: any) {
@@ -154,7 +155,9 @@ class AuthService {
       // Sinon message générique
       return new Error(errorData.message || 'Une erreur est survenue');
     } else if (error.request) {
-      return new Error('Impossible de contacter le serveur. Vérifiez votre connexion.');
+      return new Error(
+        'Impossible de contacter le serveur. Vérifiez votre connexion.',
+      );
     } else {
       return new Error(error.message || 'Une erreur inattendue est survenue');
     }

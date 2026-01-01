@@ -16,14 +16,7 @@ export const Card: React.FC<CardProps> = ({
   padding = SIZES.md,
 }) => {
   return (
-    <View
-      style={[
-        styles.card,
-        { padding },
-        elevated && SHADOWS.medium,
-        style,
-      ]}
-    >
+    <View style={[styles.card, { padding }, elevated && SHADOWS.medium, style]}>
       {children}
     </View>
   );

@@ -1,6 +1,6 @@
-import { Ionicons } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useRef, useState } from "react";
+import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   KeyboardAvoidingView,
@@ -10,18 +10,18 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Toast } from "../../components/common";
-import AuthService from "../../services/auth/auth.service";
-import { COLORS, SIZES } from "../../constants/theme";
-import { useToast } from "../../hooks/useToast";
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Toast } from '../../components/common';
+import AuthService from '../../services/auth/auth.service';
+import { COLORS, SIZES } from '../../constants/theme';
+import { useToast } from '../../hooks/useToast';
 
 interface OTPVerificationScreenProps {
   onBack: () => void;
   onVerifySuccess: () => void;
   identifier: string;
-  purpose: "registration" | "forgot-password";
+  purpose: 'registration' | 'forgot-password';
   userId: string; // 👈 userId maintenant requis
 }
 
@@ -32,7 +32,7 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
   purpose,
   userId,
 }) => {
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
@@ -57,9 +57,9 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs
+    return `${mins.toString().padStart(2, '0')}:${secs
       .toString()
-      .padStart(2, "0")}`;
+      .padStart(2, '0')}`;
   };
 
   const shakeInputs = () => {
@@ -89,7 +89,7 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
 
   const handleOtpChange = (value: string, index: number) => {
     if (value.length > 1) {
-      const digits = value.slice(0, 6).split("");
+      const digits = value.slice(0, 6).split('');
       const newOtp = [...otp];
       digits.forEach((digit, i) => {
         if (i < 6) newOtp[i] = digit;
@@ -111,7 +111,7 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
     }
 
     if (value && index === 5) {
-      const fullCode = [...newOtp.slice(0, 5), value].join("");
+      const fullCode = [...newOtp.slice(0, 5), value].join('');
       if (fullCode.length === 6) {
         handleVerify(fullCode);
       }
@@ -119,7 +119,7 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
   };
 
   const handleKeyPress = (e: any, index: number) => {
-    if (e.nativeEvent.key === "Backspace" && !otp[index] && index > 0) {
+    if (e.nativeEvent.key === 'Backspace' && !otp[index] && index > 0) {
       setActiveIndex(index - 1);
       inputRefs.current[index - 1]?.focus();
     }
@@ -130,7 +130,7 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
   };
 
   const handleVerify = async (code?: string) => {
-    const otpCode = code || otp.join("");
+    const otpCode = code || otp.join('');
 
     if (otpCode.length !== 6) {
       return;
@@ -145,15 +145,15 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
       });
 
       if (response.accessToken) {
-        await AsyncStorage.setItem("accessToken", response.accessToken);
+        await AsyncStorage.setItem('accessToken', response.accessToken);
       }
 
       if (response.refreshToken) {
-        await AsyncStorage.setItem("refreshToken", response.refreshToken);
+        await AsyncStorage.setItem('refreshToken', response.refreshToken);
       }
 
       setLoading(false);
-      showToast("Compte vérifié avec succès !", "success");
+      showToast('Compte vérifié avec succès !', 'success');
 
       setTimeout(() => {
         onVerifySuccess();
@@ -161,13 +161,13 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
     } catch (error: any) {
       setLoading(false);
       shakeInputs();
-      setOtp(["", "", "", "", "", ""]);
+      setOtp(['', '', '', '', '', '']);
       setActiveIndex(0);
       inputRefs.current[0]?.focus();
 
       showToast(
-        error.message || "Code de vérification invalide. Veuillez réessayer.",
-        "error"
+        error.message || 'Code de vérification invalide. Veuillez réessayer.',
+        'error',
       );
     }
   };
@@ -182,17 +182,17 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
 
       setCanResend(false);
       setResendTimer(60);
-      setOtp(["", "", "", "", "", ""]);
+      setOtp(['', '', '', '', '', '']);
       setActiveIndex(0);
       inputRefs.current[0]?.focus();
       setLoading(false);
 
-      showToast("Code renvoyé avec succès !", "success");
+      showToast('Code renvoyé avec succès !', 'success');
     } catch (error: any) {
       setLoading(false);
       showToast(
-        error.message || "Impossible de renvoyer le code. Veuillez réessayer.",
-        "error"
+        error.message || 'Impossible de renvoyer le code. Veuillez réessayer.',
+        'error',
       );
     }
   };
@@ -209,7 +209,7 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
       />
 
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
         <View style={styles.backButton}>
@@ -283,7 +283,7 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
               (!canResend || loading) && styles.resendTextDisabled,
             ]}
           >
-            {loading ? "Envoi..." : "Renvoyer"}
+            {loading ? 'Envoi...' : 'Renvoyer'}
           </Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   backButton: {
-    position: "absolute",
+    position: 'absolute',
     top: SIZES.xxl + 10,
     left: SIZES.md,
     zIndex: 10,
@@ -309,41 +309,41 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: SIZES.radiusMd,
     backgroundColor: COLORS.gray[100],
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   timerContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: SIZES.xxl + 60,
     marginBottom: SIZES.xl,
   },
   timer: {
     fontSize: 48,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: COLORS.text,
     letterSpacing: 2,
   },
   content: {
     paddingHorizontal: SIZES.xl,
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: SIZES.xl,
   },
   title: {
     fontSize: SIZES.h3,
-    fontWeight: "600",
+    fontWeight: '600',
     color: COLORS.text,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: SIZES.xs,
   },
   subtitle: {
     fontSize: SIZES.body,
     color: COLORS.textSecondary,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: SIZES.xxl,
   },
   otpContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
     gap: SIZES.sm,
     marginBottom: SIZES.xxl,
   },
@@ -354,9 +354,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gray[100],
     borderWidth: 2,
     borderColor: COLORS.gray[200],
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
   },
   otpInputWrapperActive: {
     borderColor: COLORS.primary,
@@ -368,28 +368,28 @@ const styles = StyleSheet.create({
   },
   otpInput: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: COLORS.white,
-    textAlign: "center",
-    width: "100%",
-    height: "100%",
-    position: "absolute",
+    textAlign: 'center',
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
   },
   placeholder: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: COLORS.gray[300],
-    position: "absolute",
+    position: 'absolute',
   },
   resendButton: {
-    alignSelf: "center",
+    alignSelf: 'center',
     paddingVertical: SIZES.md,
     marginBottom: SIZES.xl,
   },
   resendText: {
     fontSize: SIZES.body,
     color: COLORS.primary,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   resendTextDisabled: {
     color: COLORS.textLight,

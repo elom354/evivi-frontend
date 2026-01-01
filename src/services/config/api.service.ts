@@ -26,7 +26,7 @@ class ApiService {
       },
       (error) => {
         return Promise.reject(error);
-      }
+      },
     );
 
     // Intercepteur de réponse
@@ -38,7 +38,7 @@ class ApiService {
           this.clearToken();
         }
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -53,27 +53,57 @@ class ApiService {
 
   // Méthodes HTTP génériques
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    const response: AxiosResponse<T> = await this.axiosInstance.get(url, config);
+    const response: AxiosResponse<T> = await this.axiosInstance.get(
+      url,
+      config,
+    );
     return response.data;
   }
 
-  async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    const response: AxiosResponse<T> = await this.axiosInstance.post(url, data, config);
+  async post<T>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<T> {
+    const response: AxiosResponse<T> = await this.axiosInstance.post(
+      url,
+      data,
+      config,
+    );
     return response.data;
   }
 
-  async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    const response: AxiosResponse<T> = await this.axiosInstance.put(url, data, config);
+  async put<T>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<T> {
+    const response: AxiosResponse<T> = await this.axiosInstance.put(
+      url,
+      data,
+      config,
+    );
     return response.data;
   }
 
   async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    const response: AxiosResponse<T> = await this.axiosInstance.delete(url, config);
+    const response: AxiosResponse<T> = await this.axiosInstance.delete(
+      url,
+      config,
+    );
     return response.data;
   }
 
-  async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    const response: AxiosResponse<T> = await this.axiosInstance.patch(url, data, config);
+  async patch<T>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<T> {
+    const response: AxiosResponse<T> = await this.axiosInstance.patch(
+      url,
+      data,
+      config,
+    );
     return response.data;
   }
 }

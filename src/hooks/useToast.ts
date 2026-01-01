@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-type ToastType = "success" | "error" | "warning" | "info";
+type ToastType = 'success' | 'error' | 'warning' | 'info';
 
 interface ToastState {
   visible: boolean;
@@ -11,11 +11,11 @@ interface ToastState {
 export const useToast = () => {
   const [toast, setToast] = useState<ToastState>({
     visible: false,
-    message: "",
-    type: "info",
+    message: '',
+    type: 'info',
   });
 
-  const showToast = (message: string, type: ToastType = "info") => {
+  const showToast = (message: string, type: ToastType = 'info') => {
     setToast({
       visible: true,
       message,

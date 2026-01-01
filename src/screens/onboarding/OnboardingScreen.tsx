@@ -1,5 +1,5 @@
-import { StatusBar } from "expo-status-bar";
-import React, { useRef, useState } from "react";
+import { StatusBar } from 'expo-status-bar';
+import React, { useRef, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -9,13 +9,13 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { Button } from "../../components/common";
-import { ONBOARDING_SLIDES } from "../../constants/data";
-import { COLORS, SHADOWS, SIZES } from "../../constants/theme";
-import { OnboardingSlide } from "../../types";
+} from 'react-native';
+import { Button } from '../../components/common';
+import { ONBOARDING_SLIDES } from '../../constants/data';
+import { COLORS, SHADOWS, SIZES } from '../../constants/theme';
+import { OnboardingSlide } from '../../types';
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window');
 
 interface OnboardingScreenProps {
   onFinish: () => void;
@@ -58,13 +58,13 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
     const scale = scrollX.interpolate({
       inputRange,
       outputRange: [0.85, 1, 0.85],
-      extrapolate: "clamp",
+      extrapolate: 'clamp',
     });
 
     const opacity = scrollX.interpolate({
       inputRange,
       outputRange: [0.5, 1, 0.5],
-      extrapolate: "clamp",
+      extrapolate: 'clamp',
     });
 
     return (
@@ -115,13 +115,13 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
           const dotOpacity = scrollX.interpolate({
             inputRange,
             outputRange: [0.3, 1, 0.3],
-            extrapolate: "clamp",
+            extrapolate: 'clamp',
           });
 
           const dotScale = scrollX.interpolate({
             inputRange,
             outputRange: [0.8, 1.2, 0.8],
-            extrapolate: "clamp",
+            extrapolate: 'clamp',
           });
 
           return (
@@ -157,7 +157,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
         keyExtractor={(item) => item.id}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false }
+          { useNativeDriver: false },
         )}
         onViewableItemsChanged={viewableItemsChanged}
         viewabilityConfig={viewConfig}
@@ -172,8 +172,8 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
         <Button
           title={
             currentIndex === ONBOARDING_SLIDES.length - 1
-              ? "Créer un compte"
-              : "Suivant"
+              ? 'Créer un compte'
+              : 'Suivant'
           }
           onPress={scrollTo}
           fullWidth
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   },
   slide: {
     width,
-    alignItems: "center",
+    alignItems: 'center',
     paddingTop: SIZES.xxl + 20,
   },
   imageCard: {
@@ -206,43 +206,43 @@ const styles = StyleSheet.create({
     height: height * 0.45,
     borderRadius: SIZES.radiusXl,
     marginBottom: SIZES.xl,
-    overflow: "hidden",
+    overflow: 'hidden',
     ...SHADOWS.medium,
   },
   image: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
   },
   imagePlaceholder: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   placeholderContent: {
-    width: "80%",
-    height: "80%",
+    width: '80%',
+    height: '80%',
     borderRadius: SIZES.radiusLg,
   },
   contentContainer: {
     paddingHorizontal: SIZES.xxl,
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: SIZES.xl,
   },
   title: {
     fontSize: SIZES.h1,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: COLORS.primary,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: SIZES.md,
   },
   description: {
     fontSize: SIZES.body,
     color: COLORS.textSecondary,
-    textAlign: "center",
+    textAlign: 'center',
     lineHeight: 24,
   },
   footer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
@@ -251,9 +251,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   paginatorContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: SIZES.xl,
     gap: SIZES.sm,
   },
@@ -266,9 +266,9 @@ const styles = StyleSheet.create({
     marginBottom: SIZES.md,
   },
   signInContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   signInText: {
     fontSize: SIZES.body,
@@ -277,6 +277,6 @@ const styles = StyleSheet.create({
   signInLink: {
     fontSize: SIZES.body,
     color: COLORS.primary,
-    fontWeight: "700",
+    fontWeight: '700',
   },
 });

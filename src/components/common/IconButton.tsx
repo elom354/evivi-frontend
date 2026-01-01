@@ -1,7 +1,7 @@
-import { Ionicons } from "@expo/vector-icons";
-import React from "react";
-import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
-import { COLORS, SIZES } from "../../constants/theme";
+import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { COLORS, SIZES } from '../../constants/theme';
 
 interface IconButtonProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -44,8 +44,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: SIZES.radiusMd,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   disabled: {
     opacity: 0.5,

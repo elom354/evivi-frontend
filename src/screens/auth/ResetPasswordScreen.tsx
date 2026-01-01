@@ -1,6 +1,6 @@
-import { Ionicons } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
+import React, { useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -9,9 +9,9 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { Button, IconButton, Input } from "../../components/common";
-import { COLORS, SIZES } from "../../constants/theme";
+} from 'react-native';
+import { Button, IconButton, Input } from '../../components/common';
+import { COLORS, SIZES } from '../../constants/theme';
 
 interface ResetPasswordScreenProps {
   onResetSuccess: () => void;
@@ -22,31 +22,31 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
   onResetSuccess,
   identifier,
 }) => {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleResetPassword = async () => {
-    setPasswordError("");
-    setConfirmPasswordError("");
+    setPasswordError('');
+    setConfirmPasswordError('');
 
     let isValid = true;
 
     if (!password) {
-      setPasswordError("Le mot de passe est requis");
+      setPasswordError('Le mot de passe est requis');
       isValid = false;
     } else if (password.length < 6) {
-      setPasswordError("Le mot de passe doit contenir au moins 6 caractères");
+      setPasswordError('Le mot de passe doit contenir au moins 6 caractères');
       isValid = false;
     }
 
     if (!confirmPassword) {
-      setConfirmPasswordError("Veuillez confirmer votre mot de passe");
+      setConfirmPasswordError('Veuillez confirmer votre mot de passe');
       isValid = false;
     } else if (password !== confirmPassword) {
-      setConfirmPasswordError("Les mots de passe ne correspondent pas");
+      setConfirmPasswordError('Les mots de passe ne correspondent pas');
       isValid = false;
     }
 
@@ -63,7 +63,7 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
       <StatusBar style="dark" />
@@ -129,11 +129,13 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
 
         {/* Password Requirements */}
         <View style={styles.requirementsBox}>
-          <Text style={styles.requirementsTitle}>Le mot de passe doit contenir :</Text>
+          <Text style={styles.requirementsTitle}>
+            Le mot de passe doit contenir :
+          </Text>
           <View style={styles.requirement}>
             <Ionicons
               name={
-                password.length >= 6 ? "checkmark-circle" : "ellipse-outline"
+                password.length >= 6 ? 'checkmark-circle' : 'ellipse-outline'
               }
               size={20}
               color={password.length >= 6 ? COLORS.success : COLORS.textLight}
@@ -152,7 +154,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   backButton: {
-    position: "absolute",
+    position: 'absolute',
     top: SIZES.xxl + 10,
     left: SIZES.md,
     zIndex: 10,
@@ -164,7 +166,7 @@ const styles = StyleSheet.create({
     paddingBottom: SIZES.xl,
   },
   header: {
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: SIZES.xxl,
   },
   iconContainer: {
@@ -172,21 +174,21 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: SIZES.radiusXl,
     backgroundColor: COLORS.primaryLight,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: SIZES.lg,
   },
   title: {
     fontSize: 32,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: COLORS.text,
     marginBottom: SIZES.xs,
-    textAlign: "center",
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: SIZES.body,
     color: COLORS.textSecondary,
-    textAlign: "center",
+    textAlign: 'center',
     lineHeight: 24,
   },
   form: {
@@ -202,13 +204,13 @@ const styles = StyleSheet.create({
   },
   requirementsTitle: {
     fontSize: SIZES.caption,
-    fontWeight: "600",
+    fontWeight: '600',
     color: COLORS.text,
     marginBottom: SIZES.sm,
   },
   requirement: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: SIZES.sm,
   },
   requirementText: {

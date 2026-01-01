@@ -1,5 +1,5 @@
-import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
 import {
   FlatList,
   Modal,
@@ -9,8 +9,8 @@ import {
   TextInputProps,
   TouchableOpacity,
   View,
-} from "react-native";
-import { COLORS, SHADOWS, SIZES } from "../../constants/theme";
+} from 'react-native';
+import { COLORS, SHADOWS, SIZES } from '../../constants/theme';
 
 interface Country {
   code: string;
@@ -20,18 +20,20 @@ interface Country {
 }
 
 const COUNTRIES: Country[] = [
-  { code: "US", dial_code: "+1", flag: "🇺🇸", name: "United States" },
-  { code: "TG", dial_code: "+228", flag: "🇹🇬", name: "Togo" },
-  { code: "BJ", dial_code: "+229", flag: "🇧🇯", name: "Bénin" },
-  { code: "CI", dial_code: "+225", flag: "🇨🇮", name: "Côte d'Ivoire" },
-  { code: "GH", dial_code: "+233", flag: "🇬🇭", name: "Ghana" },
-  { code: "NG", dial_code: "+234", flag: "🇳🇬", name: "Nigeria" },
-  { code: "SN", dial_code: "+221", flag: "🇸🇳", name: "Sénégal" },
-  { code: "FR", dial_code: "+33", flag: "🇫🇷", name: "France" },
+  { code: 'US', dial_code: '+1', flag: '🇺🇸', name: 'United States' },
+  { code: 'TG', dial_code: '+228', flag: '🇹🇬', name: 'Togo' },
+  { code: 'BJ', dial_code: '+229', flag: '🇧🇯', name: 'Bénin' },
+  { code: 'CI', dial_code: '+225', flag: '🇨🇮', name: "Côte d'Ivoire" },
+  { code: 'GH', dial_code: '+233', flag: '🇬🇭', name: 'Ghana' },
+  { code: 'NG', dial_code: '+234', flag: '🇳🇬', name: 'Nigeria' },
+  { code: 'SN', dial_code: '+221', flag: '🇸🇳', name: 'Sénégal' },
+  { code: 'FR', dial_code: '+33', flag: '🇫🇷', name: 'France' },
 ];
 
-interface PhoneInputProps
-  extends Omit<TextInputProps, "value" | "onChangeText"> {
+interface PhoneInputProps extends Omit<
+  TextInputProps,
+  'value' | 'onChangeText'
+> {
   label?: string;
   error?: string;
   value: string;
@@ -147,18 +149,18 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: SIZES.caption,
-    fontWeight: "600",
+    fontWeight: '600',
     color: COLORS.text,
     marginBottom: SIZES.xs,
   },
   inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     height: 56,
     backgroundColor: COLORS.gray[100],
     borderRadius: SIZES.radiusLg,
     borderWidth: 1,
-    borderColor: "transparent",
+    borderColor: 'transparent',
     paddingHorizontal: SIZES.md,
   },
   inputContainerFocused: {
@@ -170,8 +172,8 @@ const styles = StyleSheet.create({
     borderColor: COLORS.error,
   },
   countrySelector: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: SIZES.xs,
     paddingRight: SIZES.sm,
   },
@@ -181,7 +183,7 @@ const styles = StyleSheet.create({
   dialCode: {
     fontSize: SIZES.body,
     color: COLORS.text,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   divider: {
     width: 1,
@@ -201,32 +203,32 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "flex-end",
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
   },
   modalContent: {
     backgroundColor: COLORS.white,
     borderTopLeftRadius: SIZES.radiusXl,
     borderTopRightRadius: SIZES.radiusXl,
-    maxHeight: "70%",
+    maxHeight: '70%',
     paddingBottom: SIZES.xl,
   },
   modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: SIZES.lg,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.gray[200],
   },
   modalTitle: {
     fontSize: SIZES.h4,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: COLORS.text,
   },
   countryItem: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: SIZES.md,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.gray[100],
@@ -243,6 +245,6 @@ const styles = StyleSheet.create({
   countryDialCode: {
     fontSize: SIZES.body,
     color: COLORS.textSecondary,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 });

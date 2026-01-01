@@ -25,7 +25,7 @@ const COUNTRIES: Country[] = [
   { code: 'US', dial_code: '+1', flag: '🇺🇸', name: 'United States' },
   { code: 'TG', dial_code: '+228', flag: '🇹🇬', name: 'Togo' },
   { code: 'BJ', dial_code: '+229', flag: '🇧🇯', name: 'Bénin' },
-  { code: 'CI', dial_code: '+225', flag: '🇨🇮', name: 'Côte d\'Ivoire' },
+  { code: 'CI', dial_code: '+225', flag: '🇨🇮', name: "Côte d'Ivoire" },
   { code: 'GH', dial_code: '+233', flag: '🇬🇭', name: 'Ghana' },
   { code: 'NG', dial_code: '+234', flag: '🇳🇬', name: 'Nigeria' },
   { code: 'SN', dial_code: '+221', flag: '🇸🇳', name: 'Sénégal' },
@@ -99,16 +99,19 @@ export const PhoneNumberScreen: React.FC<PhoneNumberScreenProps> = ({
 
           {/* Subtitle */}
           <Text style={styles.subtitle}>
-            Veuillez entrer votre numéro de téléphone valide. Nous vous enverrons un code à 4 chiffres pour vérifier votre compte.
+            Veuillez entrer votre numéro de téléphone valide. Nous vous
+            enverrons un code à 4 chiffres pour vérifier votre compte.
           </Text>
 
           {/* Phone Input */}
           <View style={styles.phoneInputContainer}>
-            <View style={[
-              styles.inputWrapper,
-              isFocused && styles.inputWrapperFocused,
-              phoneError && styles.inputWrapperError,
-            ]}>
+            <View
+              style={[
+                styles.inputWrapper,
+                isFocused && styles.inputWrapperFocused,
+                phoneError && styles.inputWrapperError,
+              ]}
+            >
               {/* Country Selector */}
               <TouchableOpacity
                 style={styles.countrySelector}
@@ -117,7 +120,11 @@ export const PhoneNumberScreen: React.FC<PhoneNumberScreenProps> = ({
               >
                 <Text style={styles.flag}>{selectedCountry.flag}</Text>
                 <Text style={styles.dialCode}>{selectedCountry.dial_code}</Text>
-                <Ionicons name="chevron-down" size={16} color={COLORS.textSecondary} />
+                <Ionicons
+                  name="chevron-down"
+                  size={16}
+                  color={COLORS.textSecondary}
+                />
               </TouchableOpacity>
 
               {/* Divider */}
@@ -137,19 +144,25 @@ export const PhoneNumberScreen: React.FC<PhoneNumberScreenProps> = ({
               />
             </View>
 
-            {phoneError ? (
-              <Text style={styles.error}>{phoneError}</Text>
-            ) : null}
+            {phoneError ? <Text style={styles.error}>{phoneError}</Text> : null}
           </View>
 
           {/* Continue Button */}
           <TouchableOpacity
-            style={[styles.continueButton, isButtonActive && styles.continueButtonActive]}
+            style={[
+              styles.continueButton,
+              isButtonActive && styles.continueButtonActive,
+            ]}
             onPress={handleContinue}
             activeOpacity={0.8}
             disabled={!isButtonActive}
           >
-            <Text style={[styles.continueButtonText, isButtonActive && styles.continueButtonTextActive]}>
+            <Text
+              style={[
+                styles.continueButtonText,
+                isButtonActive && styles.continueButtonTextActive,
+              ]}
+            >
               Continuer
             </Text>
           </TouchableOpacity>

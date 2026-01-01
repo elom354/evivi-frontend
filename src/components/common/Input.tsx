@@ -1,5 +1,5 @@
-import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,7 @@ import {
   TextInputProps,
   TouchableOpacity,
   View,
-} from "react-native";
+} from 'react-native';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -42,7 +42,7 @@ export const Input: React.FC<InputProps> = ({
           <Ionicons
             name={icon}
             size={20}
-            color={isFocused ? "#ff5757" : "#6B7280"}
+            color={isFocused ? '#ff5757' : '#6B7280'}
             style={styles.icon}
           />
         ) : null}
@@ -62,7 +62,7 @@ export const Input: React.FC<InputProps> = ({
             style={styles.eyeButton}
           >
             <Ionicons
-              name={showPassword ? "eye-off-outline" : "eye-outline"}
+              name={showPassword ? 'eye-off-outline' : 'eye-outline'}
               size={20}
               color="#6B7280"
             />
@@ -81,26 +81,26 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: "600",
-    color: "#1A1A1A",
+    fontWeight: '600',
+    color: '#1A1A1A',
     marginBottom: 8,
   },
   inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     height: 56,
-    backgroundColor: "#F3F4F6",
+    backgroundColor: '#F3F4F6',
     borderRadius: 16,
     borderWidth: 2,
-    borderColor: "transparent",
+    borderColor: 'transparent',
     paddingHorizontal: 16,
   },
   inputContainerFocused: {
-    borderColor: "#ff5757",
-    backgroundColor: "#FFFFFF",
+    borderColor: '#ff5757',
+    backgroundColor: '#FFFFFF',
   },
   inputContainerError: {
-    borderColor: "#EF4444",
+    borderColor: '#EF4444',
   },
   icon: {
     marginRight: 12,
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: "#1A1A1A",
+    color: '#1A1A1A',
     paddingVertical: 0,
   },
   eyeButton: {
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   },
   error: {
     fontSize: 12,
-    color: "#EF4444",
+    color: '#EF4444',
     marginTop: 4,
   },
 });

@@ -1,11 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Animated,
-  Image,
-} from 'react-native';
+import { View, Text, StyleSheet, Animated, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, SIZES } from '../../constants/theme';
 
@@ -47,7 +41,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
             useNativeDriver: true,
           }),
         ]),
-        { iterations: 2 }
+        { iterations: 2 },
       ),
     ]).start(() => {
       setTimeout(onFinish, 500);

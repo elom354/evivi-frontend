@@ -1,5 +1,5 @@
-import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
 import {
   Alert,
   ScrollView,
@@ -7,7 +7,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
+} from 'react-native';
 
 interface HomeScreenProps {
   onLogout: () => void;
@@ -15,21 +15,17 @@ interface HomeScreenProps {
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ onLogout }) => {
   const handleLogout = () => {
-    Alert.alert(
-      "Déconnexion",
-      "Êtes-vous sûr de vouloir vous déconnecter ?",
-      [
-        {
-          text: "Annuler",
-          style: "cancel",
-        },
-        {
-          text: "Se déconnecter",
-          style: "destructive",
-          onPress: onLogout,
-        },
-      ]
-    );
+    Alert.alert('Déconnexion', 'Êtes-vous sûr de vouloir vous déconnecter ?', [
+      {
+        text: 'Annuler',
+        style: 'cancel',
+      },
+      {
+        text: 'Se déconnecter',
+        style: 'destructive',
+        onPress: onLogout,
+      },
+    ]);
   };
 
   return (
@@ -118,102 +114,102 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLogout }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: '#FFFFFF',
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 24,
     paddingTop: 60,
     paddingBottom: 20,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: '#FFFFFF',
   },
   greeting: {
     fontSize: 14,
-    color: "#6B7280",
+    color: '#6B7280',
   },
   name: {
     fontSize: 24,
-    fontWeight: "bold",
-    color: "#1A1A1A",
+    fontWeight: 'bold',
+    color: '#1A1A1A',
     marginTop: 4,
   },
   profileButton: {
     width: 50,
     height: 50,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
     flex: 1,
     paddingHorizontal: 24,
   },
   welcomeCard: {
-    backgroundColor: "#FFF5F5",
+    backgroundColor: '#FFF5F5',
     borderRadius: 16,
     padding: 24,
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 32,
   },
   welcomeIcon: {
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: "#FFFFFF",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 16,
   },
   welcomeTitle: {
     fontSize: 20,
-    fontWeight: "bold",
-    color: "#1A1A1A",
+    fontWeight: 'bold',
+    color: '#1A1A1A',
     marginBottom: 8,
   },
   welcomeText: {
     fontSize: 14,
-    color: "#6B7280",
-    textAlign: "center",
+    color: '#6B7280',
+    textAlign: 'center',
   },
   section: {
     marginBottom: 32,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#1A1A1A",
+    fontWeight: 'bold',
+    color: '#1A1A1A',
     marginBottom: 16,
   },
   actionsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 12,
   },
   actionCard: {
-    width: "48%",
-    backgroundColor: "#F9FAFB",
+    width: '48%',
+    backgroundColor: '#F9FAFB',
     borderRadius: 16,
     padding: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
   actionIcon: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "#FFFFFF",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 12,
   },
   actionTitle: {
     fontSize: 14,
-    fontWeight: "600",
-    color: "#1A1A1A",
+    fontWeight: '600',
+    color: '#1A1A1A',
   },
   activityCard: {
-    flexDirection: "row",
-    backgroundColor: "#F9FAFB",
+    flexDirection: 'row',
+    backgroundColor: '#F9FAFB',
     borderRadius: 16,
     padding: 16,
     gap: 12,
@@ -221,25 +217,25 @@ const styles = StyleSheet.create({
   activityText: {
     flex: 1,
     fontSize: 14,
-    color: "#6B7280",
+    color: '#6B7280',
     lineHeight: 20,
   },
   logoutButton: {
-    flexDirection: "row",
-    backgroundColor: "#FEF2F2",
+    flexDirection: 'row',
+    backgroundColor: '#FEF2F2',
     borderRadius: 12,
     padding: 16,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 16,
     marginBottom: 32,
     gap: 8,
     borderWidth: 1,
-    borderColor: "#FEE2E2",
+    borderColor: '#FEE2E2',
   },
   logoutText: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#EF4444",
+    fontWeight: '600',
+    color: '#EF4444',
   },
 });

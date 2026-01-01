@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   ActivityIndicator,
   StyleSheet,
@@ -7,14 +7,14 @@ import {
   TouchableOpacity,
   View,
   ViewStyle,
-} from "react-native";
-import { COLORS, SHADOWS, SIZES } from "../../constants/theme";
+} from 'react-native';
+import { COLORS, SHADOWS, SIZES } from '../../constants/theme';
 
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: "primary" | "secondary" | "outline" | "ghost";
-  size?: "small" | "medium" | "large";
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
   loading?: boolean;
   fullWidth?: boolean;
@@ -26,8 +26,8 @@ interface ButtonProps {
 export const Button: React.FC<ButtonProps> = ({
   title,
   onPress,
-  variant = "primary",
-  size = "medium",
+  variant = 'primary',
+  size = 'medium',
   disabled = false,
   loading = false,
   fullWidth = false,
@@ -40,7 +40,7 @@ export const Button: React.FC<ButtonProps> = ({
       {loading ? (
         <ActivityIndicator
           color={
-            variant === "outline" || variant === "ghost"
+            variant === 'outline' || variant === 'ghost'
               ? COLORS.primary
               : COLORS.white
           }
@@ -88,11 +88,11 @@ const styles = StyleSheet.create({
     borderRadius: 28,
   },
   contentWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: SIZES.sm,
-    height: "100%",
+    height: '100%',
   },
   iconWrapper: {
     marginRight: SIZES.xs,
@@ -120,22 +120,22 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gray[100],
   },
   container_outline: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderWidth: 2,
     borderColor: COLORS.primary,
   },
   container_ghost: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
   },
   fullWidth: {
-    width: "100%",
+    width: '100%',
   },
   disabled: {
     opacity: 0.5,
   },
   text: {
-    fontWeight: "600",
-    textAlign: "center",
+    fontWeight: '600',
+    textAlign: 'center',
   },
   text_small: {
     fontSize: SIZES.caption,

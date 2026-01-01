@@ -1,17 +1,17 @@
-import { Ionicons } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
+import React, { useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { Button, IconButton, Input, Toast } from "../../components/common";
-import { COLORS, SIZES } from "../../constants/theme";
-import AuthService from "../../services/auth/auth.service";
-import { useToast } from "../../hooks/useToast";
+} from 'react-native';
+import { Button, IconButton, Input, Toast } from '../../components/common';
+import { COLORS, SIZES } from '../../constants/theme';
+import AuthService from '../../services/auth/auth.service';
+import { useToast } from '../../hooks/useToast';
 
 interface RegisterScreenProps {
   onRegisterSuccess: (phone: string, userId: string) => void;
@@ -24,15 +24,15 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
   onNavigateToLogin,
   onBack,
 }) => {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const [nameError, setNameError] = useState("");
-  const [phoneError, setPhoneError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [nameError, setNameError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -41,48 +41,48 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
 
   const validatePhone = (phone: string) => {
     const phoneRegex = /^(\+228|00228)?[0-9]{8}$/;
-    return phoneRegex.test(phone.replace(/\s/g, ""));
+    return phoneRegex.test(phone.replace(/\s/g, ''));
   };
 
   const handleRegister = async () => {
-    setNameError("");
-    setPhoneError("");
-    setPasswordError("");
-    setConfirmPasswordError("");
+    setNameError('');
+    setPhoneError('');
+    setPasswordError('');
+    setConfirmPasswordError('');
 
     let isValid = true;
 
     if (!name || name.length < 2) {
-      setNameError("Le nom doit contenir au moins 2 caractères");
+      setNameError('Le nom doit contenir au moins 2 caractères');
       isValid = false;
     }
 
     if (!phone) {
-      setPhoneError("Le numéro de téléphone est requis");
+      setPhoneError('Le numéro de téléphone est requis');
       isValid = false;
     } else if (!validatePhone(phone)) {
-      setPhoneError("Numéro de téléphone invalide (ex: +228 XX XX XX XX)");
+      setPhoneError('Numéro de téléphone invalide (ex: +228 XX XX XX XX)');
       isValid = false;
     }
 
     if (!password) {
-      setPasswordError("Le mot de passe est requis");
+      setPasswordError('Le mot de passe est requis');
       isValid = false;
     } else if (password.length < 6) {
-      setPasswordError("Le mot de passe doit contenir au moins 6 caractères");
+      setPasswordError('Le mot de passe doit contenir au moins 6 caractères');
       isValid = false;
     }
 
     if (!confirmPassword) {
-      setConfirmPasswordError("Veuillez confirmer votre mot de passe");
+      setConfirmPasswordError('Veuillez confirmer votre mot de passe');
       isValid = false;
     } else if (password !== confirmPassword) {
-      setConfirmPasswordError("Les mots de passe ne correspondent pas");
+      setConfirmPasswordError('Les mots de passe ne correspondent pas');
       isValid = false;
     }
 
     if (!acceptTerms) {
-      showToast("Veuillez accepter les conditions d'utilisation", "warning");
+      showToast("Veuillez accepter les conditions d'utilisation", 'warning');
       return;
     }
 
@@ -94,22 +94,22 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
       const response = await AuthService.register({
         fullName: name,
         phone: phone,
-        phoneCountryCode: "+228",
+        phoneCountryCode: '+228',
         password: password,
-        otpMethod: "sms",
+        otpMethod: 'sms',
       });
 
       setLoading(false);
-      showToast("Inscription réussie ! Vérifiez votre téléphone.", "success");
+      showToast('Inscription réussie ! Vérifiez votre téléphone.', 'success');
 
       setTimeout(() => {
-        onRegisterSuccess(phone, response.user._id || "");
+        onRegisterSuccess(phone, response.user._id || '');
       }, 1500);
     } catch (error: any) {
       setLoading(false);
       showToast(
         error.message || "Une erreur est survenue lors de l'inscription",
-        "error"
+        'error',
       );
     }
   };
@@ -204,7 +204,12 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
             </View>
             <View style={styles.termsTextContainer}>
               <Text style={styles.termsText}>
-                J'accepte les <Text style={styles.termsLink}>conditions d'utilisation</Text> et la <Text style={styles.termsLink}>politique de confidentialité</Text>
+                J'accepte les{' '}
+                <Text style={styles.termsLink}>conditions d'utilisation</Text>{' '}
+                et la{' '}
+                <Text style={styles.termsLink}>
+                  politique de confidentialité
+                </Text>
               </Text>
             </View>
           </TouchableOpacity>
@@ -235,7 +240,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   backButton: {
-    position: "absolute",
+    position: 'absolute',
     top: SIZES.xxl + 10,
     left: SIZES.md,
     zIndex: 10,
@@ -247,26 +252,26 @@ const styles = StyleSheet.create({
     paddingBottom: SIZES.xl,
   },
   header: {
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: SIZES.xl,
   },
   title: {
     fontSize: 32,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: COLORS.text,
     marginBottom: SIZES.xs,
   },
   subtitle: {
     fontSize: SIZES.body,
     color: COLORS.textSecondary,
-    textAlign: "center",
+    textAlign: 'center',
   },
   form: {
     marginBottom: SIZES.lg,
   },
   termsContainer: {
-    flexDirection: "row",
-    alignItems: "flex-start",
+    flexDirection: 'row',
+    alignItems: 'flex-start',
     marginBottom: SIZES.lg,
     marginTop: SIZES.xs,
   },
@@ -276,8 +281,8 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.radiusSm,
     borderWidth: 2,
     borderColor: COLORS.gray[300],
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: SIZES.sm,
     marginTop: 2,
   },
@@ -295,15 +300,15 @@ const styles = StyleSheet.create({
   },
   termsLink: {
     color: COLORS.primary,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   registerButton: {
     marginTop: SIZES.sm,
   },
   loginContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: SIZES.md,
   },
   loginText: {
@@ -313,6 +318,6 @@ const styles = StyleSheet.create({
   loginLink: {
     fontSize: SIZES.body,
     color: COLORS.primary,
-    fontWeight: "700",
+    fontWeight: '700',
   },
 });

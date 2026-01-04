@@ -1,18 +1,25 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import * as SplashScreenExpo from 'expo-splash-screen';
+// App.tsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SplashScreen } from './src/screens/splash/SplashScreen';
-import { OnboardingScreen } from './src/screens/onboarding/OnboardingScreen';
-import { LoginScreen } from './src/screens/auth/LoginScreen';
-import { RegisterScreen } from './src/screens/auth/RegisterScreen';
-import { ForgotPasswordScreen } from './src/screens/auth/ForgotPasswordScreen';
-import { OTPVerificationScreen } from './src/screens/auth/OTPVerificationScreen';
-import { ResetPasswordScreen } from './src/screens/auth/ResetPasswordScreen';
-import { HomeScreen } from './src/screens/main/HomeScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import * as SplashScreenExpo from 'expo-splash-screen';
+import { StatusBar } from 'expo-status-bar';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Alert, StyleSheet, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 import { COLORS } from './src/constants/theme';
 
+// Écrans
+import { ForgotPasswordScreen } from './src/screens/auth/ForgotPasswordScreen';
+import { LoginScreen } from './src/screens/auth/LoginScreen';
+import { OTPVerificationScreen } from './src/screens/auth/OTPVerificationScreen';
+import { RegisterScreen } from './src/screens/auth/RegisterScreen';
+import { ResetPasswordScreen } from './src/screens/auth/ResetPasswordScreen';
+import HomeTabs from './src/screens/main/HomeTabs';
+import { OnboardingScreen } from './src/screens/onboarding/OnboardingScreen';
+import { SplashScreen } from './src/screens/splash/SplashScreen';
+
+// Empêche le splash screen de se cacher automatiquement
 SplashScreenExpo.preventAutoHideAsync();
 
 type AppState =
@@ -30,15 +37,17 @@ export default function App() {
   const [appState, setAppState] = useState<AppState>('loading');
   const [appIsReady, setAppIsReady] = useState(false);
   const [userIdentifier, setUserIdentifier] = useState('');
-  const [userId, setUserId] = useState(''); // 👈 Nouveau state pour userId
+  const [userId, setUserId] = useState('');
   const [otpPurpose, setOtpPurpose] = useState<
     'registration' | 'forgot-password'
   >('registration');
 
+  // Chargement initial de l'app (ressources + état persistant)
   useEffect(() => {
     async function prepare() {
       try {
-        await loadResources();
+        // Simule le chargement de polices, assets, etc.
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         const hasSeenOnboarding =
           await AsyncStorage.getItem('hasSeenOnboarding');
@@ -51,8 +60,8 @@ export default function App() {
         } else {
           setAppState('splash');
         }
-      } catch (e) {
-        console.warn(e);
+      } catch (error) {
+        console.warn('Erreur lors du chargement initial :', error);
       } finally {
         setAppIsReady(true);
       }
@@ -61,29 +70,24 @@ export default function App() {
     prepare();
   }, []);
 
-  const loadResources = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  };
-
+  // Cache le splash screen natif une fois que l'app est prête
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       await SplashScreenExpo.hideAsync();
     }
   }, [appIsReady]);
 
-  const handleSplashFinish = () => {
-    setAppState('onboarding');
-  };
+  // Handlers de navigation
+  const handleSplashFinish = () => setAppState('onboarding');
 
   const handleOnboardingFinish = async () => {
     await AsyncStorage.setItem('hasSeenOnboarding', 'true');
     setAppState('login');
   };
 
-  // 👇 Mise à jour pour recevoir le userId
   const handleRegisterSuccess = (phone: string, userId: string) => {
     setUserIdentifier(phone);
-    setUserId(userId); // Stocker le userId
+    setUserId(userId);
     setOtpPurpose('registration');
     setAppState('otp-verification');
   };
@@ -116,72 +120,87 @@ export default function App() {
   };
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('isLoggedIn');
-    await AsyncStorage.removeItem('accessToken');
-    await AsyncStorage.removeItem('refreshToken');
+    await AsyncStorage.multiRemove([
+      'isLoggedIn',
+      'accessToken',
+      'refreshToken',
+    ]);
     setAppState('login');
   };
 
+  // Pendant le chargement
   if (!appIsReady) {
     return null;
   }
 
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
-      <StatusBar style={appState === 'splash' ? 'light' : 'dark'} />
+    <SafeAreaProvider>
+      <View style={styles.container} onLayout={onLayoutRootView}>
+        <StatusBar style={appState === 'splash' ? 'light' : 'dark'} />
 
-      {appState === 'splash' && <SplashScreen onFinish={handleSplashFinish} />}
+        {/* Écran Splash personnalisé */}
+        {appState === 'splash' && (
+          <SplashScreen onFinish={handleSplashFinish} />
+        )}
 
-      {appState === 'onboarding' && (
-        <OnboardingScreen onFinish={handleOnboardingFinish} />
-      )}
+        {/* Onboarding */}
+        {appState === 'onboarding' && (
+          <OnboardingScreen onFinish={handleOnboardingFinish} />
+        )}
 
-      {appState === 'login' && (
-        <LoginScreen
-          onLoginSuccess={handleLoginSuccess}
-          onNavigateToRegister={() => setAppState('register')}
-          onForgotPassword={() => setAppState('forgot-password')}
-        />
-      )}
+        {/* Authentification */}
+        {appState === 'login' && (
+          <LoginScreen
+            onLoginSuccess={handleLoginSuccess}
+            onNavigateToRegister={() => setAppState('register')}
+            onForgotPassword={() => setAppState('forgot-password')}
+          />
+        )}
 
-      {appState === 'register' && (
-        <RegisterScreen
-          onRegisterSuccess={handleRegisterSuccess}
-          onNavigateToLogin={() => setAppState('login')}
-          onBack={() => setAppState('login')}
-        />
-      )}
+        {appState === 'register' && (
+          <RegisterScreen
+            onRegisterSuccess={handleRegisterSuccess}
+            onNavigateToLogin={() => setAppState('login')}
+            onBack={() => setAppState('login')}
+          />
+        )}
 
-      {appState === 'forgot-password' && (
-        <ForgotPasswordScreen
-          onBack={() => setAppState('login')}
-          onCodeSent={handleForgotPasswordCodeSent}
-        />
-      )}
+        {appState === 'forgot-password' && (
+          <ForgotPasswordScreen
+            onBack={() => setAppState('login')}
+            onCodeSent={handleForgotPasswordCodeSent}
+          />
+        )}
 
-      {appState === 'otp-verification' && (
-        <OTPVerificationScreen
-          onBack={() =>
-            setAppState(
-              otpPurpose === 'registration' ? 'register' : 'forgot-password',
-            )
-          }
-          onVerifySuccess={handleOTPVerifySuccess}
-          identifier={userIdentifier}
-          purpose={otpPurpose}
-          userId={userId}
-        />
-      )}
+        {appState === 'otp-verification' && (
+          <OTPVerificationScreen
+            onBack={() =>
+              setAppState(
+                otpPurpose === 'registration' ? 'register' : 'forgot-password',
+              )
+            }
+            onVerifySuccess={handleOTPVerifySuccess}
+            identifier={userIdentifier}
+            purpose={otpPurpose}
+            userId={userId}
+          />
+        )}
 
-      {appState === 'reset-password' && (
-        <ResetPasswordScreen
-          onResetSuccess={handleResetPasswordSuccess}
-          identifier={userIdentifier}
-        />
-      )}
+        {appState === 'reset-password' && (
+          <ResetPasswordScreen
+            onResetSuccess={handleResetPasswordSuccess}
+            identifier={userIdentifier}
+          />
+        )}
 
-      {appState === 'main' && <HomeScreen onLogout={handleLogout} />}
-    </View>
+        {/* Application principale avec navigation par tabs */}
+        {appState === 'main' && (
+          <NavigationContainer>
+            <HomeTabs onLogout={handleLogout} />
+          </NavigationContainer>
+        )}
+      </View>
+    </SafeAreaProvider>
   );
 }
 

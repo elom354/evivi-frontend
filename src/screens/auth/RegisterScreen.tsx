@@ -7,7 +7,11 @@ import {
   Text,
   TouchableOpacity,
   View,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaContainer } from '../../components/layout';
 import { Button, IconButton, Input, Toast } from '../../components/common';
 import { COLORS, SIZES } from '../../constants/theme';
 import AuthService from '../../services/auth/auth.service';
@@ -115,7 +119,7 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaContainer style={styles.container}>
       <StatusBar style="dark" />
 
       <Toast
@@ -125,26 +129,38 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
         onHide={hideToast}
       />
 
-      <View style={styles.backButton}>
-        <IconButton
-          icon="arrow-back"
-          onPress={onBack}
-          size={24}
-          color={COLORS.text}
-        />
-      </View>
-
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.keyboardView}
       >
-        <View style={styles.header}>
-          <Text style={styles.title}>Créer un compte</Text>
-          <Text style={styles.subtitle}>
-            Rejoignez des milliers de célibataires
-          </Text>
+        <View style={styles.backButton}>
+          <IconButton
+            icon="arrow-back"
+            onPress={onBack}
+            size={24}
+            color={COLORS.text}
+          />
         </View>
+
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <LinearGradient
+            colors={[COLORS.primaryLight + '40', 'transparent']}
+            style={styles.headerGradient}
+          >
+            <View style={styles.header}>
+              <View style={styles.iconContainer}>
+                <Ionicons name="person-add" size={40} color={COLORS.primary} />
+              </View>
+              <Text style={styles.title}>Créer un compte</Text>
+              <Text style={styles.subtitle}>
+                Rejoignez des milliers de célibataires
+              </Text>
+            </View>
+          </LinearGradient>
 
         <View style={styles.form}>
           <Input
@@ -230,7 +246,8 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+      </KeyboardAvoidingView>
+    </SafeAreaContainer>
   );
 };
 
@@ -239,24 +256,43 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
   },
+  keyboardView: {
+    flex: 1,
+  },
   backButton: {
     position: 'absolute',
-    top: SIZES.xxl + 10,
+    top: SIZES.xl,
     left: SIZES.md,
     zIndex: 10,
   },
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: SIZES.xl,
+    paddingBottom: SIZES.xl,
+  },
+  headerGradient: {
     paddingTop: SIZES.xxl + 20,
     paddingBottom: SIZES.xl,
+    marginBottom: SIZES.lg,
+    borderRadius: SIZES.radiusXl,
+    marginHorizontal: -SIZES.xl,
+    marginTop: -SIZES.xl,
   },
   header: {
     alignItems: 'center',
-    marginBottom: SIZES.xl,
+    paddingHorizontal: SIZES.xl,
+  },
+  iconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: COLORS.primaryLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: SIZES.lg,
   },
   title: {
-    fontSize: 32,
+    fontSize: SIZES.h1,
     fontWeight: 'bold',
     color: COLORS.text,
     marginBottom: SIZES.xs,
@@ -265,6 +301,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.body,
     color: COLORS.textSecondary,
     textAlign: 'center',
+    paddingHorizontal: SIZES.md,
   },
   form: {
     marginBottom: SIZES.lg,

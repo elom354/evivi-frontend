@@ -11,7 +11,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaContainer } from '../../components/layout';
 import { Toast } from '../../components/common';
 import AuthService from '../../services/auth/auth.service';
 import { COLORS, SIZES } from '../../constants/theme';
@@ -198,7 +200,7 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaContainer style={styles.container}>
       <StatusBar style="dark" />
 
       <Toast
@@ -222,9 +224,19 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
           </TouchableOpacity>
         </View>
 
-        <View style={styles.timerContainer}>
-          <Text style={styles.timer}>{formatTime(resendTimer)}</Text>
-        </View>
+        <LinearGradient
+          colors={[COLORS.primaryLight + '40', 'transparent']}
+          style={styles.headerGradient}
+        >
+          <View style={styles.timerContainer}>
+            <LinearGradient
+              colors={[COLORS.primary, COLORS.secondary]}
+              style={styles.timerCircle}
+            >
+              <Text style={styles.timer}>{formatTime(resendTimer)}</Text>
+            </LinearGradient>
+          </View>
+        </LinearGradient>
 
         <View style={styles.content}>
           <Text style={styles.title}>Tapez le code de vérification</Text>
@@ -287,7 +299,7 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
           </Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
-    </View>
+    </SafeAreaContainer>
   );
 };
 const styles = StyleSheet.create({
@@ -300,33 +312,53 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: SIZES.xxl + 10,
+    top: SIZES.xl,
     left: SIZES.md,
     zIndex: 10,
   },
   backButtonTouchable: {
-    width: 40,
-    height: 40,
-    borderRadius: SIZES.radiusMd,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: COLORS.gray[100],
     justifyContent: 'center',
     alignItems: 'center',
   },
+  headerGradient: {
+    paddingTop: SIZES.xxl + 20,
+    paddingBottom: SIZES.xl,
+    marginBottom: SIZES.lg,
+    borderRadius: SIZES.radiusXl,
+    marginHorizontal: -SIZES.xl,
+    marginTop: -SIZES.xl,
+  },
   timerContainer: {
     alignItems: 'center',
-    marginTop: SIZES.xxl + 60,
     marginBottom: SIZES.xl,
   },
+  timerCircle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 12,
+  },
   timer: {
-    fontSize: 48,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: COLORS.text,
+    color: COLORS.white,
     letterSpacing: 2,
   },
   content: {
     paddingHorizontal: SIZES.xl,
     alignItems: 'center',
     marginBottom: SIZES.xl,
+    marginTop: SIZES.lg,
   },
   title: {
     fontSize: SIZES.h3,

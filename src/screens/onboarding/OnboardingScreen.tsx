@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaContainer } from '../../components/layout';
 import { Button } from '../../components/common';
 import { ONBOARDING_SLIDES } from '../../constants/data';
 import { COLORS, SHADOWS, SIZES } from '../../constants/theme';
@@ -144,7 +146,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaContainer style={styles.container} edges={['top', 'bottom']}>
       <StatusBar style="dark" />
 
       <FlatList
@@ -165,8 +167,11 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
         scrollEventThrottle={32}
       />
 
-      {/* Footer */}
-      <View style={styles.footer}>
+      {/* Footer avec gradient moderne */}
+      <LinearGradient
+        colors={[COLORS.white, COLORS.white + 'F0', COLORS.white]}
+        style={styles.footer}
+      >
         <Paginator />
 
         <Button
@@ -182,12 +187,12 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
 
         <View style={styles.signInContainer}>
           <Text style={styles.signInText}>Vous avez déjà un compte ? </Text>
-          <TouchableOpacity onPress={onFinish}>
+          <TouchableOpacity onPress={onFinish} activeOpacity={0.7}>
             <Text style={styles.signInLink}>Se connecter</Text>
           </TouchableOpacity>
         </View>
-      </View>
-    </View>
+      </LinearGradient>
+    </SafeAreaContainer>
   );
 };
 
@@ -247,8 +252,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     paddingHorizontal: SIZES.xl,
-    paddingBottom: SIZES.xxl + 20,
-    backgroundColor: COLORS.white,
+    paddingBottom: SIZES.xxl,
+    paddingTop: SIZES.lg,
   },
   paginatorContainer: {
     flexDirection: 'row',

@@ -10,10 +10,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaContainer } from '../../components/layout';
 import { Input, Toast } from '../../components/common';
 import { useToast } from '../../hooks/useToast';
 import AuthService from '../../services/auth/auth.service';
+import { COLORS, SIZES } from '../../constants/theme';
 
 interface LoginScreenProps {
   onLoginSuccess: () => void;
@@ -109,7 +112,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaContainer style={styles.container}>
       <StatusBar style="dark" />
 
       {/* Toast */}
@@ -129,13 +132,21 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Header */}
-          <View style={styles.header}>
-            <Text style={styles.title}>Bon retour !</Text>
-            <Text style={styles.subtitle}>
-              Connectez-vous pour continuer votre aventure
-            </Text>
-          </View>
+          {/* Header avec gradient */}
+          <LinearGradient
+            colors={[COLORS.primaryLight + '40', 'transparent']}
+            style={styles.headerGradient}
+          >
+            <View style={styles.header}>
+              <View style={styles.iconContainer}>
+                <Ionicons name="heart" size={40} color={COLORS.primary} />
+              </View>
+              <Text style={styles.title}>Bon retour !</Text>
+              <Text style={styles.subtitle}>
+                Connectez-vous pour continuer votre aventure
+              </Text>
+            </View>
+          </LinearGradient>
 
           {/* Form */}
           <View style={styles.form}>
@@ -199,38 +210,55 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </View>
+    </SafeAreaContainer>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
   },
   keyboardView: {
     flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: 32,
-    paddingTop: 60,
-    paddingBottom: 32,
+    paddingHorizontal: SIZES.xl,
+    paddingBottom: SIZES.xl,
+  },
+  headerGradient: {
+    paddingTop: SIZES.xxl,
+    paddingBottom: SIZES.xl,
+    marginBottom: SIZES.lg,
+    borderRadius: SIZES.radiusXl,
+    marginHorizontal: -SIZES.xl,
+    marginTop: -SIZES.xl,
   },
   header: {
     alignItems: 'center',
-    marginBottom: 40,
+    paddingHorizontal: SIZES.xl,
+  },
+  iconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: COLORS.primaryLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: SIZES.lg,
   },
   title: {
-    fontSize: 32,
+    fontSize: SIZES.h1,
     fontWeight: 'bold',
-    color: '#1A1A1A',
-    marginBottom: 4,
+    color: COLORS.text,
+    marginBottom: SIZES.xs,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#6B7280',
+    fontSize: SIZES.body,
+    color: COLORS.textSecondary,
     textAlign: 'center',
+    paddingHorizontal: SIZES.md,
   },
   form: {
     marginBottom: 24,
@@ -241,71 +269,77 @@ const styles = StyleSheet.create({
     marginTop: -4,
   },
   forgotPasswordText: {
-    fontSize: 14,
-    color: '#ff5757',
+    fontSize: SIZES.caption,
+    color: COLORS.primary,
     fontWeight: '600',
   },
   loginButton: {
-    height: 56,
-    backgroundColor: '#ff5757',
-    borderRadius: 28,
+    height: SIZES.buttonHeight,
+    backgroundColor: COLORS.primary,
+    borderRadius: SIZES.radiusFull,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: SIZES.sm,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   loginButtonDisabled: {
     opacity: 0.5,
   },
   loginButtonText: {
-    fontSize: 16,
+    fontSize: SIZES.body,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: COLORS.white,
   },
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 32,
+    marginVertical: SIZES.xl,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: COLORS.gray[200],
   },
   dividerText: {
-    marginHorizontal: 16,
-    fontSize: 12,
-    color: '#9CA3AF',
+    marginHorizontal: SIZES.md,
+    fontSize: SIZES.small,
+    color: COLORS.textLight,
     fontWeight: '500',
   },
   socialContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 16,
-    marginBottom: 32,
+    gap: SIZES.md,
+    marginBottom: SIZES.xl,
   },
   socialButton: {
     width: 56,
     height: 56,
-    borderRadius: 16,
-    backgroundColor: '#FFFFFF',
+    borderRadius: SIZES.radiusMd,
+    backgroundColor: COLORS.white,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: '#E5E7EB',
+    borderColor: COLORS.gray[200],
   },
   registerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: SIZES.md,
+    marginBottom: SIZES.xl,
   },
   registerText: {
-    fontSize: 16,
-    color: '#6B7280',
+    fontSize: SIZES.body,
+    color: COLORS.textSecondary,
   },
   registerLink: {
-    fontSize: 16,
-    color: '#ff5757',
+    fontSize: SIZES.body,
+    color: COLORS.primary,
     fontWeight: '700',
   },
 });

@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaContainer } from '../../components/layout';
 import { Button, IconButton, Input } from '../../components/common';
 import { COLORS, SIZES } from '../../constants/theme';
 
@@ -55,38 +57,44 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
+    <SafeAreaContainer style={styles.container}>
       <StatusBar style="dark" />
 
-      {/* Back Button */}
-      <View style={styles.backButton}>
-        <IconButton
-          icon="arrow-back"
-          onPress={onBack}
-          size={24}
-          color={COLORS.text}
-        />
-      </View>
-
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.iconContainer}>
-            <Ionicons name="lock-closed" size={40} color={COLORS.primary} />
-          </View>
-          <Text style={styles.title}>Mot de passe oublié ?</Text>
-          <Text style={styles.subtitle}>
-            Entrez votre email ou numéro de téléphone pour recevoir un code de
-            réinitialisation
-          </Text>
+        {/* Back Button */}
+        <View style={styles.backButton}>
+          <IconButton
+            icon="arrow-back"
+            onPress={onBack}
+            size={24}
+            color={COLORS.text}
+          />
         </View>
+
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Header avec gradient */}
+          <LinearGradient
+            colors={[COLORS.primaryLight + '40', 'transparent']}
+            style={styles.headerGradient}
+          >
+            <View style={styles.header}>
+              <View style={styles.iconContainer}>
+                <Ionicons name="lock-closed" size={40} color={COLORS.primary} />
+              </View>
+              <Text style={styles.title}>Mot de passe oublié ?</Text>
+              <Text style={styles.subtitle}>
+                Entrez votre email ou numéro de téléphone pour recevoir un code de
+                réinitialisation
+              </Text>
+            </View>
+          </LinearGradient>
 
         {/* Form */}
         <View style={styles.form}>
@@ -122,7 +130,8 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
           </Text>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaContainer>
   );
 };
 
@@ -131,21 +140,31 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
   },
+  keyboardView: {
+    flex: 1,
+  },
   backButton: {
     position: 'absolute',
-    top: SIZES.xxl + 10,
+    top: SIZES.xl,
     left: SIZES.md,
     zIndex: 10,
   },
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: SIZES.xl,
+    paddingBottom: SIZES.xl,
+  },
+  headerGradient: {
     paddingTop: SIZES.xxl + 20,
     paddingBottom: SIZES.xl,
+    marginBottom: SIZES.lg,
+    borderRadius: SIZES.radiusXl,
+    marginHorizontal: -SIZES.xl,
+    marginTop: -SIZES.xl,
   },
   header: {
     alignItems: 'center',
-    marginBottom: SIZES.xxl,
+    paddingHorizontal: SIZES.xl,
   },
   iconContainer: {
     width: 80,
